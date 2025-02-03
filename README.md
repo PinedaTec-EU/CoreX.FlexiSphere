@@ -33,4 +33,4 @@ License
 This project is licensed under the GPL-3.0. For more details, see the LICENSE file.
 
 Contact
-For more information, visit the GitHub repository [flexisphere@gmail.com](mailto:flexisphere@gmail.com)
+For more information, visit the GitHub repository or contact [flexisphere@gmail.com](mailto:pinedatec.eu@gmail.com) with the subject "FlexiSphere:"
