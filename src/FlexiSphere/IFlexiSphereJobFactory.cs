@@ -65,7 +65,7 @@ public interface IFlexiSphereJobFactory
     /// </summary>
     /// <param name="jobAction"></param>
     /// <returns></returns>
-    IFlexiSphereJobFactory SetJobAction(Func<IFlexiSphereContext?, Task<bool>> jobAction);
+    IFlexiSphereJobFactory SetJobAction(Func<IFlexiSphereContext?, Task> jobAction);
 
     /// <summary>
     /// Defines the job

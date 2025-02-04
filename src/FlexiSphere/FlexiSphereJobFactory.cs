@@ -38,7 +38,7 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
     private TimeSpan? _rateLimiter;
 
     private IFlexiSphereJob? _jobInstance;
-    private Func<IFlexiSphereContext?, Task<bool>>? _jobAction;
+    private Func<IFlexiSphereContext?, Task>? _jobAction;
 
     public static IFlexiSphereJobFactory Create() =>
         new FlexiSphereJobFactory();
@@ -65,7 +65,7 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
         return this;
     }
 
-    public IFlexiSphereJobFactory SetJobAction(Func<IFlexiSphereContext?, Task<bool>> jobAction)
+    public IFlexiSphereJobFactory SetJobAction(Func<IFlexiSphereContext?, Task> jobAction)
     {
         _jobAction = jobAction;
         return this;

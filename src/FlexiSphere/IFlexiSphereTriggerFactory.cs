@@ -60,7 +60,7 @@ public interface IFlexiSphereTriggerFactory
     IFlexiSphereTriggerFactory SetMaxConcurrent(int maxConcurrent);
 
     /// <summary>
-    /// Define the action to be executed <c ref="TimeSphereEventTrigger" />
+    /// Define the action to be executed <c ref="FlexiSphereEventTrigger" />
     /// </summary>
     /// <param name="eventAction"></param>
     /// <param name="delay"></param>
@@ -68,7 +68,7 @@ public interface IFlexiSphereTriggerFactory
     IFlexiSphereTriggerFactory ActivateOnAction(Func<IFlexiSphereContext?, Task<bool>> eventAction, int delay = 1000);
 
     /// <summary>
-    /// Define the cron expression for the trigger <c ref="TimeSphereScheduledTrigger" />
+    /// Define the cron expression for the trigger <c ref="FlexiSphereScheduledTrigger" />
     /// </summary>
     /// <param name="cronExpression"></param>
     /// <returns></returns>

@@ -31,35 +31,35 @@ namespace FlexiSphere;
 public interface IFlexiSphereFactory
 {
     /// <summary>
-    /// Add a job to the TimeSphere
+    /// Add a job to the FlexiSphere
     /// </summary>
     /// <param name="job"></param>
     /// <returns></returns>
     IFlexiSphereFactory AddJob(IFlexiSphereJob job);
 
     /// <summary>
-    /// Add a job to the TimeSphere
+    /// Add a job to the FlexiSphere
     /// </summary>
     /// <param name="action"></param>
     /// <returns></returns>
     IFlexiSphereFactory AddJob(Action<IFlexiSphereJobFactory> action);
 
     /// <summary>
-    /// Add a trigger to the TimeSphere
+    /// Add a trigger to the FlexiSphere
     /// </summary>
     /// <param name="trigger"></param>
     /// <returns></returns>
     IFlexiSphereFactory AddTrigger(IFlexiSphereTrigger trigger);
 
     /// <summary>
-    /// Add a trigger to the TimeSphere
+    /// Add a trigger to the FlexiSphere
     /// </summary>
     /// <param name="action"></param>
     /// <returns></returns>
     IFlexiSphereFactory AddTrigger(Action<IFlexiSphereTriggerFactory> action);
 
     /// <summary>
-    /// Build the TimeSphere
+    /// Build the FlexiSphere
     /// </summary>
     /// <returns></returns>
     IFlexiSphere Build();

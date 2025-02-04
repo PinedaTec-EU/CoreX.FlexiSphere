@@ -31,22 +31,22 @@ namespace FlexiSphere;
 public interface IFlexiSphere : IFlexiSphereComponent
 {
     /// <summary>
-    /// Event triggered when the TimeSphere is canceled.
+    /// Event triggered when the FlexiSphere is canceled.
     /// </summary>
     event FlexiSphereHandler? OnCanceled;
 
     /// <summary>
-    /// Event triggered when the TimeSphere has completed a flow. 
+    /// Event triggered when the FlexiSphere has completed a flow. 
     /// </summary>
     event FlexiSphereHandler? OnCompleted;
 
     /// <summary>
-    /// Event triggered when the TimeSphere is triggered.
+    /// Event triggered when the FlexiSphere is triggered.
     /// </summary>
     event FlexiSphereHandler? OnTriggered;
 
     /// <summary>
-    /// Event triggered when the TimeSphere is faulted.
+    /// Event triggered when the FlexiSphere is faulted.
     /// </summary>
     event FlexiSphereExceptionHandler<Exception>? OnFaulted;
 
@@ -61,39 +61,39 @@ public interface IFlexiSphere : IFlexiSphereComponent
     event FlexiSphereHandler? OnAfterJobExecuted;
 
     /// <summary>
-    /// Gets the counter of the TimeSphere executions.
+    /// Gets the counter of the FlexiSphere executions.
     /// </summary>
     int Counter { get; }
 
     /// <summary>
-    /// Gets the last time the TimeSphere was triggered.
+    /// Gets the last time the FlexiSphere was triggered.
     /// </summary>
     DateTime? LastTriggered { get; }
 
     /// <summary>
-    /// Gets the list of TimeSphere triggers.
+    /// Gets the list of FlexiSphere triggers.
     /// </summary>
     IReadOnlyCollection<IFlexiSphereTrigger> Triggers { get; }
 
     /// <summary>
-    /// Gets the list of TimeSphere jobs.
+    /// Gets the list of FlexiSphere jobs.
     /// </summary>
     IReadOnlyCollection<IFlexiSphereJob> Jobs { get; }
 
     /// <summary>
-    /// Adds a trigger to the TimeSphere.
+    /// Adds a trigger to the FlexiSphere.
     /// </summary>
     /// <param name="trigger"></param>
     void AddTrigger(IFlexiSphereTrigger trigger);
 
     /// <summary>
-    /// Adds a job to the TimeSphere.
+    /// Adds a job to the FlexiSphere.
     /// </summary>
     /// <param name="job"></param>
     void AddJob(IFlexiSphereJob job);
 
     /// <summary>
-    /// Starts the TimeSphere.
+    /// Starts the FlexiSphere.
     /// </summary>
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
@@ -101,7 +101,7 @@ public interface IFlexiSphere : IFlexiSphereComponent
     Task StartAsync(IFlexiSphereContext? context = null, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Stops the TimeSphere.
+    /// Stops the FlexiSphere.
     /// </summary>
     /// <param name="issue"></param>
     /// <param name="context"></param>
