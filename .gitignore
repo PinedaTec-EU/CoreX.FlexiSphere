@@ -1,0 +1,6 @@
+.DS_Store
+**/[Bb]in/*
+**/[Oo]bj/*
+**/app.logs/*
+
+**/.terraform*

@@ -16,7 +16,8 @@ To install FlexiSphere, clone this repository and add the project to your soluti
 git clone https://github.com/PinedaTec-EU/FlexiSphere.git
 ```
 
-# Contributions
+## Contributions
+
 Contributions are welcome! If you want to collaborate, please follow these steps:
 
 Fork the repository.
