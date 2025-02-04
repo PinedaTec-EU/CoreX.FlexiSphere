@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FlexiSphere;
 
-public interface IFlexiSphere
+public interface IFlexiSphere : IFlexiSphereComponent
 {
     /// <summary>
     /// Event triggered when the TimeSphere is canceled.
