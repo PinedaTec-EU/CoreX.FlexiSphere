@@ -5,15 +5,15 @@ FlexiSphere is a C# library (net 9), extensible and configurable component for 
 ## Features
 
 - **EventTrigger**: Activates when an adhoc implemented logic returns true. It runs every 500ms (configurable).
-- **TimeScheduleTrigger**: Executes at intervals configured according to a cron expression.
+- **ScheduledTrigger**: Executes at intervals configured according to a cron expression.
 - **Jobs**: Configured with at least one job that meets a specific interface and executes when any of the triggers activate.
 
 ## Installation
 
-To install Timesphere, clone this repository and add the project to your solution:
+To install FlexiSphere, clone this repository and add the project to your solution:
 
 ```bash
-git clone https://github.com/jmrpineda/timesphere.git
+git clone https://github.com/PinedaTec-EU/FlexiSphere.git
 ```
 
 ## Contributions
@@ -30,8 +30,8 @@ Push your changes (git push origin feature/new-feature).
 
 Open a Pull Request.
 
-License
+**License**
 This project is licensed under the GPL-3.0. For more details, see the LICENSE file.
 
-Contact
+**Contact**
 For more information, visit the GitHub repository or contact [pinedatec.eu@gmail.com](mailto:pinedatec.eu@gmail.com) with the subject "FlexiSphere:"
