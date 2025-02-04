@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FlexiSphere.jobs;
 
 namespace FlexiSphere;
@@ -66,11 +62,7 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
         try
         {
             _jobInstance = Activator.CreateInstance(jobType) as IFlexiSphereJob;
-
-            if (_jobInstance == null)
-            {
-                throw new FlexiSphereException($"Cannot create instance of {jobType.Name}");
-            }
+            _jobInstance.ThrowExceptionIfNull<FlexiSphereException>($"Cannot create instance of {jobType.Name}");
 
             return this;
         }
@@ -90,7 +82,7 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
     {
         _jobName.ThrowExceptionIfNullOrEmpty<FlexiSphereException>($"{nameof(_jobName)} cannot be null or empty!");
 
-        if (_jobInstance != null)
+        if (_jobInstance is not null)
         {
             return this.CreateJobInstance(_jobInstance);
         }
@@ -103,6 +95,9 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
     private IFlexiSphereJob CreateJobInstance()
     {
         var job = new FlexiSphereJob();
+
+        _jobAction.ThrowExceptionIfNull<FlexiSphereException>($"{nameof(_jobAction)} cannot be null!");
+
         job.ConfigureJob(_jobName!, _jobGroup, _jobAction!, _maxConcurrents, _rateLimiter);
 
         return job;
