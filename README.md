@@ -16,7 +16,8 @@ To install Timesphere, clone this repository and add the project to your solutio
 git clone https://github.com/jmrpineda/timesphere.git
 ```
 
-# Contributions
+## Contributions
+
 Contributions are welcome! If you want to collaborate, please follow these steps:
 
 Fork the repository.
