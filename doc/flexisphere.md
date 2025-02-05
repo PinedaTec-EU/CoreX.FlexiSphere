@@ -13,6 +13,10 @@ Realted interfaces/components
 - [IFlexiSphereTrigger](./IFlexiSphereTrigger.md)
 - [IFlexiSphereJob](./IFlexiSphereJob.md)
 
+## Factory
+
+- [FlexiSphereFactory](./FlexiSphereFactory.md)
+
 ## Hands-on
 
 This component requires atleast one trigger, and one job to work
@@ -24,17 +28,17 @@ flowchart TD
     FS --> FSJ[Jobs]
 ```
 
-The triggers are activated by the FlexiSphere, and when a trigger is triggered send a notification to FlexiSphere,
+The triggers are activated by FlexiSphere and when a trigger is triggered raise a notification to FlexiSphere OnTriggered.
 
-When FlexiSphere gets the event, loop the jobs defined, and execute on every job ExecuteAsync
-TimeSphere is responsilbe to throw events like:
+When FlexiSphere receives the event, it runs the defined jobs, and executes each job.
+FlexiSphere is responsilbe to throw events such as:
 
-- OnTriggered
-- OnTriggerCompleted
-- OnBeforeJob
-- OnAfterJob
-- OnCancelled
-- OnFaulted
+- OnTriggered: Raised when the trigger is triggered.
+- OnTriggerCompleted: When the trigger has finished, and it is disabled for further executions.
+- OnBeforeJob: Raised just before the job action is invoked.
+- OnAfterJob: Raised just after the job action is invoked.
+- OnCancelled: Raised when is requested the cancellation to the cancellation token source is requested.
+- OnFaulted: Raised when any of the components, triggers or jobs throws an exception.
 
 Sequence diagram:
 
@@ -70,10 +74,14 @@ classDiagram
 
     class IFlexiSphereTrigger {
         +ActivateTrigger(IFlexiSphereContext)
+        +OnFaulted() event
+        +OnTriggered() event
+        +OnCompleted() event
     }
 
     class IFlexiSphereJob {
         +ExecuteAsync(IFlexiSphereContext)
+        +OnFaulted() event
     }
 
     IFlexiSphere "1" --> "1..*" IFlexiSphereTrigger

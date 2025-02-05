@@ -1,4 +1,4 @@
-# FlexiSphere
+# ARK FlexiSphere
 
 FlexiSphere is a C# library (net 9), extensible and configurable component for managing events and scheduled tasks. This project allows you to define triggers and jobs that execute based on certain conditions.
 
@@ -13,7 +13,7 @@ FlexiSphere is a C# library (net 9), extensible and configurable component for 
 To install FlexiSphere, clone this repository and add the project to your solution:
 
 ```bash
-git clone https://github.com/PinedaTec-EU/FlexiSphere.git
+git clone https://github.com/PinedaTec-EU/ark.FlexiSphere.git
 ```
 
 ## Contributions
