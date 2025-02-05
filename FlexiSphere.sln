@@ -5,11 +5,11 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BBE324B1-79F5-4D8C-8552-D7C09A3CF95F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlexiSphere", "src\FlexiSphere\FlexiSphere.csproj", "{9B8226BD-7AE8-4EF2-936A-476B598D93C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ark.FlexiSphere", "src\ark.FlexiSphere\ark.FlexiSphere.csproj", "{9B8226BD-7AE8-4EF2-936A-476B598D93C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{BEC0B9BF-EB2D-40F2-BC6B-5599B0C5506E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlexiSphere.test", "test\FlexiSphere.test\FlexiSphere.test.csproj", "{51B25972-3EF1-4680-AE3C-665772AD08AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ark.FlexiSphere.test", "test\ark.FlexiSphere.test\ark.FlexiSphere.test.csproj", "{51B25972-3EF1-4680-AE3C-665772AD08AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
