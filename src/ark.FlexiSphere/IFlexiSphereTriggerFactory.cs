@@ -28,14 +28,14 @@
 
 namespace ark.FlexiSphere;
 
-public interface IFlexiSphereTriggerFactory
+public interface IFlexiSphereTriggerFactory : IFlexiSphereFactory
 {
     /// <summary>
     /// Set the owener for the trigger
     /// </summary>
     /// <param name="owner"></param>
     /// <returns></returns>
-    IFlexiSphereTriggerFactory SetOwner(IFlexiSphereFactory owner);
+    IFlexiSphereTriggerFactory SetOwner(IFlexiSphereComponentFactory owner);
 
     /// <summary>
     /// Set the trigger name and group

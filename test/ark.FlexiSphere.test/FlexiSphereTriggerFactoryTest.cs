@@ -27,7 +27,7 @@
 #endregion
 
 using ark.FlexiSphere.triggers;
-
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 using Shouldly;
@@ -55,7 +55,7 @@ public class FlexiSphereTriggerFactoryTest
         var factory = FlexiSphereTriggerFactory.Create();
 
         // Act
-        var action = () => factory.SetOwner(new Mock<IFlexiSphereFactory>().Object);
+        var action = () => factory.SetOwner(new Mock<IFlexiSphereComponentFactory>().Object);
 
         // Assert
         action.ShouldNotThrow();
@@ -249,5 +249,122 @@ public class FlexiSphereTriggerFactoryTest
 
         // Assert
         action.ShouldNotThrow();
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDirect_Options()
+    {
+        // Arrange
+        FlexiSphereTriggerFactoryOptions options = new();
+        options.MaxConcurrents = 5;
+
+        var triggerFactory = new FlexiSphereTriggerFactory(options);
+
+        // Act
+        var trigger = triggerFactory
+            .ActivateOnAction((context) => Task.FromResult(true))
+            .WithTriggerName("TestTrigger", "TestGroup")
+            .FireTriggerOnStart(true)
+            .Build();
+
+        // Assert
+        trigger.ShouldNotBeNull();
+        trigger.MaxConcurrents.ShouldBe(5);
+    }
+
+    [Fact]
+    public void Factory_Event_Setup_WithDI()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere(options =>
+        {
+            options.TriggerFactoryOptions = new();
+            options.TriggerFactoryOptions.MaxConcurrents = 5;
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var triggerFactory = serviceProvider.GetRequiredService<IFlexiSphereTriggerFactory>();
+
+        // Act
+        var trigger = triggerFactory
+            .WithTriggerName("TestTrigger", "TestGroup")
+            .ActivateOnAction((context) => Task.FromResult(true))
+            .FireTriggerOnStart(true)
+            .Build();
+
+        // Assert
+        trigger.ShouldNotBeNull();
+        trigger.MaxConcurrents.ShouldBe(5);
+    }
+
+    [Fact]
+    public void Factory_Scheduled_Setup_WithDI()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere(options =>
+        {
+            options.TriggerFactoryOptions = new();
+            options.TriggerFactoryOptions.MaxConcurrents = 5;
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var triggerFactory = serviceProvider.GetRequiredService<IFlexiSphereTriggerFactory>();
+
+        // Act
+        var trigger = triggerFactory
+            .WithTriggerName("TestTrigger", "TestGroup")
+            .StartOn("0 0/20 * * * *")
+            .FireTriggerOnStart(true)
+            .Build();
+
+        // Assert
+        trigger.ShouldNotBeNull();
+        trigger.MaxConcurrents.ShouldBe(5);
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDI_TriggerFactory_CustomOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere<FakeClass_FlexiSphereTriggerFactory>(options =>
+        {
+            options.TriggerFactoryOptions = new();
+            options.TriggerFactoryOptions.MaxConcurrents = 5;
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var triggerFactory = serviceProvider.GetRequiredService<IFlexiSphereTriggerFactory>();
+
+        // Act
+        var trigger = triggerFactory.WithTriggerName("TestTrigger", "TestGroup")
+            .FireTriggerOnStart(true)
+            .Build();
+
+        // Assert
+        trigger.ShouldNotBeNull();
+        trigger.ShouldBeOfType<FakeClass_FlexiSphereTrigger>();
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDI_TriggerFactory_NoOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere<FakeClass_FlexiSphereTriggerFactory>();
+
+        var serviceProvider = services.BuildServiceProvider();
+        var TriggerFactory = serviceProvider.GetRequiredService<IFlexiSphereTriggerFactory>();
+
+        // Act
+        var Trigger = TriggerFactory.WithTriggerName("TestTrigger", "TestGroup")
+            .FireTriggerOnStart(true)
+            .Build();
+
+        // Assert
+        Trigger.ShouldNotBeNull();
+        Trigger.ShouldBeOfType<FakeClass_FlexiSphereTrigger>();
     }
 }

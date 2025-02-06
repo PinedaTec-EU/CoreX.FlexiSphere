@@ -26,6 +26,8 @@
 
 #endregion
 
+using Microsoft.Extensions.Options;
+
 using ark.extensions;
 using ark.FlexiSphere.jobs;
 
@@ -44,12 +46,30 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
     public static IFlexiSphereJobFactory Create() =>
         new FlexiSphereJobFactory();
 
-    public IFlexiSphereJobFactory SetOwner(IFlexiSphereFactory owner)
+    public FlexiSphereJobFactory()
+    { }
+
+    public FlexiSphereJobFactory(IOptions<FlexiSphereJobFactoryOptions> options)
+        : this()
     {
-        return this;
+        if (options is not null)
+        {
+            _maxConcurrents = options.Value.MaxConcurrents;
+            _rateLimiter = options.Value.RateLimiter;
+        }
     }
 
-    public IFlexiSphereJobFactory WithJobName(string jobName, string jobGroup)
+    public FlexiSphereJobFactory(FlexiSphereJobFactoryOptions options)
+        : this()
+    {
+        _maxConcurrents = options.MaxConcurrents;
+        _rateLimiter = options.RateLimiter;
+    }
+
+    public IFlexiSphereJobFactory SetOwner(IFlexiSphereComponentFactory owner) =>
+        this;
+
+    public IFlexiSphereJobFactory WithJobName(string jobName, string? jobGroup)
     {
         jobName.ThrowExceptionIfNullOrEmpty<FlexiSphereException>($"{nameof(jobName)} cannot be null or empty!");
 
@@ -68,6 +88,9 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
 
     public IFlexiSphereJobFactory SetJobAction(Func<IFlexiSphereContext?, Task> jobAction)
     {
+        // Validations
+        _jobInstance.ThrowExceptionIfNotNull<FlexiSphereException>($"{nameof(_jobInstance)} is already defined!");
+
         _jobAction = jobAction;
         return this;
     }
@@ -82,6 +105,11 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
 
     public IFlexiSphereJobFactory DefineJob<TType>(TType jobInstance) where TType : class, IFlexiSphereJob
     {
+        // Validations
+        jobInstance.ThrowExceptionIfNull<FlexiSphereException>($"{nameof(jobInstance)} cannot be null!");
+        _jobInstance.ThrowExceptionIfNotNull<FlexiSphereException>($"{nameof(_jobInstance)} is already defined!");
+        _jobAction.ThrowExceptionIfNotNull<FlexiSphereException>($"{nameof(_jobAction)} is already defined!");
+
         _jobInstance = jobInstance;
         return this;
     }
@@ -90,6 +118,11 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
     {
         try
         {
+            // Validations
+            jobType.ThrowExceptionIfNull<FlexiSphereException>($"{nameof(jobType)} cannot be null!");
+            _jobInstance.ThrowExceptionIfNotNull<FlexiSphereException>($"{nameof(_jobInstance)} is already defined!");
+            _jobAction.ThrowExceptionIfNotNull<FlexiSphereException>($"{nameof(_jobAction)} is already defined!");
+
             _jobInstance = Activator.CreateInstance(jobType) as IFlexiSphereJob;
             _jobInstance.ThrowExceptionIfNull<FlexiSphereException>($"Cannot create instance of {jobType.Name}");
 
@@ -103,6 +136,7 @@ public class FlexiSphereJobFactory : IFlexiSphereJobFactory
 
     public IFlexiSphereJob Build()
     {
+        // Validations
         _jobName.ThrowExceptionIfNullOrEmpty<FlexiSphereException>($"{nameof(_jobName)} cannot be null or empty!");
 
         if (_jobInstance is not null)

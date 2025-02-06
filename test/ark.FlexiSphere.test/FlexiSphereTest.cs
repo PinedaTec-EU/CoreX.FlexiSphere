@@ -140,13 +140,22 @@ public class FlexiSphereTest
     public async Task Start_With_Settings()
     {
         // Arrange
-        bool subscribedT = false;
+        bool subscribedTriggerFaulted = false;
+        bool subscribedTriggerCanceled = false;
+        bool subscribedTriggerCompleted = false;
+        bool subscribedTriggerTriggered = false;
         bool subscribedJ = false;
         IFlexiSphere tsphere = new FlexiSphere();
 
         var trigger1 = new Mock<IFlexiSphereTrigger>();
         trigger1.SetupAdd(j => j.OnFaulted += It.IsAny<FlexiSphereTriggerExceptionHandler<FlexiSphereException>>())
-            .Callback(() => subscribedT = true);
+            .Callback(() => subscribedTriggerFaulted = true);
+        trigger1.SetupAdd(j => j.OnCanceled += It.IsAny<FlexiSphereTriggerEventHandler>())
+            .Callback(() => subscribedTriggerCanceled = true);
+        trigger1.SetupAdd(j => j.OnCompleted += It.IsAny<FlexiSphereTriggerEventHandler>())
+            .Callback(() => subscribedTriggerCompleted = true);
+        trigger1.SetupAdd(j => j.OnTriggered += It.IsAny<FlexiSphereTriggerEventHandler>())
+            .Callback(() => subscribedTriggerTriggered = true);
 
         var job1 = new Mock<IFlexiSphereJob>();
         job1.SetupAdd(j => j.OnFaulted += It.IsAny<FlexiSphereJobExceptionHandler<Exception>>())
@@ -163,7 +172,10 @@ public class FlexiSphereTest
         trigger1.Verify(j => j.ActivateTrigger(It.IsAny<IFlexiSphereContext>(), It.IsAny<CancellationToken>()), Times.Once);
 
         subscribedJ.ShouldBeTrue();
-        subscribedT.ShouldBeTrue();
+        subscribedTriggerFaulted.ShouldBeTrue();
+        subscribedTriggerCanceled.ShouldBeTrue();
+        subscribedTriggerCompleted.ShouldBeTrue();
+        subscribedTriggerTriggered.ShouldBeTrue();
     }
 
     [Fact]
@@ -438,5 +450,50 @@ public class FlexiSphereTest
         isCompleted.ShouldBe(action == "oncompleted");
         isTriggered.ShouldBe(action == "ontriggered");
         isFaulted.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task StopAsync_WithoutStart()
+    {
+        // Arrange
+        IFlexiSphere tsphere = new FlexiSphere();
+
+        var trigger1 = new Mock<IFlexiSphereTrigger>();
+
+        var job1 = new Mock<IFlexiSphereJob>();
+
+        tsphere.AddTrigger(trigger1.Object);
+        tsphere.AddJob(job1.Object);
+
+        await tsphere.StopAsync("test", cancellationToken: TestContext.Current.CancellationToken);
+
+        tsphere.Triggers.Count.ShouldBe(1);
+        tsphere.Jobs.Count.ShouldBe(1);
+
+        trigger1.Verify(j => j.ActivateTrigger(It.IsAny<IFlexiSphereContext>(), It.IsAny<CancellationToken>()), Times.Never);
+        trigger1.Verify(j => j.DeactivateTrigger(It.IsAny<string>(), It.IsAny<IFlexiSphereContext>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task StopAsync_Ok()
+    {
+        // Arrange
+        IFlexiSphere tsphere = new FlexiSphere();
+
+        var trigger1 = new Mock<IFlexiSphereTrigger>();
+
+        var job1 = new Mock<IFlexiSphereJob>();
+
+        tsphere.AddTrigger(trigger1.Object);
+        tsphere.AddJob(job1.Object);
+
+        await tsphere.StartAsync(cancellationToken: TestContext.Current.CancellationToken);
+        await tsphere.StopAsync("test", cancellationToken: TestContext.Current.CancellationToken);
+
+        tsphere.Triggers.Count.ShouldBe(1);
+        tsphere.Jobs.Count.ShouldBe(1);
+
+        trigger1.Verify(j => j.ActivateTrigger(It.IsAny<IFlexiSphereContext>(), It.IsAny<CancellationToken>()), Times.Once);
+        trigger1.Verify(j => j.DeactivateTrigger(It.IsAny<string>(), It.IsAny<IFlexiSphereContext>()), Times.Once);
     }
 }

@@ -26,6 +26,7 @@
 
 #endregion
 
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 using Shouldly;
@@ -109,5 +110,83 @@ public class FlexiSphereFactoryTest
 
         // Assert
         Factory.Build().Triggers.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDI()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere(options =>
+        {
+            options.JobFactoryOptions = new();
+            options.JobFactoryOptions.MaxConcurrents = 5;
+
+            options.TriggerFactoryOptions = new();
+            options.TriggerFactoryOptions.MaxConcurrents = 5;
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var sphereFactory = serviceProvider.GetRequiredService<IFlexiSphereComponentFactory>();
+
+        // Act
+        var sphere = sphereFactory
+             .AddTrigger(b => b.WithTriggerName("Test", "").StartOn("5 0 * 8 *"))
+             .AddJob(b => b.WithJobName("Test", "").SetJobAction((context) => Task.FromResult(true)))
+             .Build();
+
+        // Assert
+        sphere.ShouldNotBeNull();
+        sphere.Triggers.Count.ShouldBe(1);
+        sphere.Jobs.Count.ShouldBe(1);
+
+        sphere.Triggers.First().MaxConcurrents.ShouldBe(5);
+        sphere.Jobs.First().MaxConcurrents.ShouldBe(5);
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDI_JobFactory_CustomOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere<FakeClass_FlexiSphereFactory>(options =>
+        {
+            options.JobFactoryOptions = new();
+            options.JobFactoryOptions.MaxConcurrents = 5;
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var sphereFactory = serviceProvider.GetRequiredService<IFlexiSphereComponentFactory>();
+
+        // Act
+        var sphere = sphereFactory
+            .AddTrigger(b => b.WithTriggerName("Test", "").StartOn("5 0 * 8 *"))
+            .AddJob(b => b.WithJobName("Test", "").SetJobAction((context) => Task.FromResult(true)))
+            .Build();
+
+        // Assert
+        sphere.ShouldNotBeNull();
+        sphere.ShouldBeOfType<FakeClass_FlexiSphere>();
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDI_JobFactory_NoOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere<FakeClass_FlexiSphereFactory>();
+
+        var serviceProvider = services.BuildServiceProvider();
+        var sphereFactory = serviceProvider.GetRequiredService<IFlexiSphereComponentFactory>();
+
+        // Act
+        var sphere = sphereFactory
+            .AddTrigger(b => b.WithTriggerName("Test", "").StartOn("5 0 * 8 *"))
+            .AddJob(b => b.WithJobName("Test", "").SetJobAction((context) => Task.FromResult(true)))
+            .Build();
+
+        // Assert
+        sphere.ShouldNotBeNull();
+        sphere.ShouldBeOfType<FakeClass_FlexiSphere>();
     }
 }
