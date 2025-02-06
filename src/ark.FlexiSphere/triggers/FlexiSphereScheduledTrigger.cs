@@ -34,7 +34,7 @@ using NLog;
 
 namespace ark.FlexiSphere.triggers;
 
-public class FlexiSphereScheduledTrigger : FlexiSphereTriggerBase, IFlexiSphereTrigger
+public class FlexiSphereScheduledTrigger : FlexiSphereTriggerBase, IFlexiSphereScheduledTrigger
 {
     public string CronTime { get => _cronExpression?.ToString() ?? "0 0/5 * * * *"; }
 
