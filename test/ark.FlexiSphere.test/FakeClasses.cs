@@ -1,3 +1,31 @@
+#region Header
+
+// --------------------------------------------------------------------------------------
+// Powered by:
+// 
+//     __________.__                  .___    ___________                             
+//     \______   \__| ____   ____   __| _/____\__    ___/___   ____       ____  __ __ 
+//      |     ___/  |/    \_/ __ \ / __ |\__  \ |    |_/ __ \_/ ___\    _/ __ \|  |  \
+//      |    |   |  |   |  \  ___// /_/ | / __ \|    |\  ___/\  \___    \  ___/|  |  /
+//      |____|   |__|___|  /\___  >____ |(____  /____| \___  >\___  > /\ \___  >____/ 
+//                   \/     \/     \/     \/           \/     \/  \/     \/
+// 
+// 
+// FileName: FakeClasses.cs
+//
+// Author:   jmr.pineda
+// eMail:    jmr.pineda@pinedatec.eu
+// Profile:  http://pinedatec.eu/profile
+//
+//           Copyrights (c) PinedaTec.eu 2025, all rights reserved.
+//           CC BY-NC-ND - https://creativecommons.org/licenses/by-nc-nd/4.0
+//
+//  Created at: 2025-02-06T16:38:41.756Z
+//
+// --------------------------------------------------------------------------------------
+
+#endregion
+
 
 
 using System.Diagnostics.CodeAnalysis;
@@ -95,7 +123,7 @@ public class FakeClass_FlexiSphereTriggerFactory : IFlexiSphereTriggerFactory
         return this;
     }
 
-    public IFlexiSphereTriggerFactory SetMaxConcurrent(int maxConcurrent)
+    public IFlexiSphereTriggerFactory SetMaxConcurrents(int maxConcurrent)
     {
         return this;
     }
@@ -198,21 +226,23 @@ public class FakeClass_FlexiSphere : IFlexiSphere
 
     public void AddJob(IFlexiSphereJob job)
     {
-        throw new NotImplementedException();
+        // Nothing to do here
     }
 
     public void AddTrigger(IFlexiSphereTrigger trigger)
     {
-        throw new NotImplementedException();
+        // Nothing to do here
     }
 
-    public Task StartAsync(IFlexiSphereContext? context = null, CancellationToken cancellationToken = default)
+    public async Task StartAsync(IFlexiSphereContext? context = null, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        // Nothing to do here
+        await Task.CompletedTask;
     }
 
-    public Task StopAsync(string issue, IFlexiSphereContext? context = null, CancellationToken cancellationToken = default)
+    public async Task StopAsync(string issue, IFlexiSphereContext? context = null, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        // Nothing to do here
+        await Task.CompletedTask;
     }
 }

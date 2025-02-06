@@ -26,14 +26,22 @@
 
 #endregion
 
+using ark.extensions;
 using ark.FlexiSphere.triggers;
 
 using Shouldly;
 
 namespace ark.FlexiSphere.test;
 
-public class FlexiSphereEventTriggerTest
+public class FlexiSphereEventTriggerTest : IClassFixture<TestFixture>
 {
+    private readonly TestFixture _testFixture;
+
+    public FlexiSphereEventTriggerTest(TestFixture testFixture)
+    {
+        _testFixture = testFixture;
+    }
+
     [Fact]
     public void ConfigureTrigger()
     {
@@ -79,7 +87,7 @@ public class FlexiSphereEventTriggerTest
         // Act
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
 
-        await TestHelper.DelayWhileAsync(5000, () => !isTriggered, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isTriggered, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.ShouldNotBeNull();
@@ -193,7 +201,7 @@ public class FlexiSphereEventTriggerTest
         // Act
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
 
-        await TestHelper.DelayWhileAsync(5000, () => trigger.PressureCounter != 2, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => trigger.PressureCounter != 2, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.ShouldNotBeNull();
@@ -249,7 +257,7 @@ public class FlexiSphereEventTriggerTest
         // Act
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
 
-        await TestHelper.DelayWhileAsync(5000, () => isTriggered < 2, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => isTriggered < 2, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.ShouldNotBeNull();
@@ -292,7 +300,7 @@ public class FlexiSphereEventTriggerTest
         // Act
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
 
-        await TestHelper.DelayWhileAsync(5000, () => !isFaulted, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isFaulted, cancellationToken: TestContext.Current.CancellationToken);
 
         isFaulted.ShouldBeTrue();
         isCompleted.ShouldBeTrue();
@@ -342,7 +350,7 @@ public class FlexiSphereEventTriggerTest
         // Act
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
 
-        await TestHelper.DelayWhileAsync(5000, () => isTriggered < 2, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => isTriggered < 2, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.ShouldNotBeNull();
@@ -389,7 +397,7 @@ public class FlexiSphereEventTriggerTest
         // Act
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
 
-        await TestHelper.DelayWhileAsync(5000, () => !isCompleted, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isCompleted, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.ShouldNotBeNull();
@@ -435,7 +443,7 @@ public class FlexiSphereEventTriggerTest
         // Act
         trigger.ActivateTrigger(null, cts.Token);
 
-        await TestHelper.DelayWhileAsync(5000, () => !isCanceled, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isCanceled, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.ShouldNotBeNull();
@@ -482,7 +490,7 @@ public class FlexiSphereEventTriggerTest
         // Act
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
 
-        await TestHelper.DelayWhileAsync(5000, () => !isCompleted, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isCompleted, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.ShouldNotBeNull();

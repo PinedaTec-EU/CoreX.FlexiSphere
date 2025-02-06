@@ -57,7 +57,7 @@ public interface IFlexiSphereTriggerFactory : IFlexiSphereFactory
     /// </summary>
     /// <param name="maxConcurrent"></param>
     /// <returns></returns> 
-    IFlexiSphereTriggerFactory SetMaxConcurrent(int maxConcurrent);
+    IFlexiSphereTriggerFactory SetMaxConcurrents(int maxConcurrent);
 
     /// <summary>
     /// Define the action to be executed <c ref="FlexiSphereEventTrigger" />

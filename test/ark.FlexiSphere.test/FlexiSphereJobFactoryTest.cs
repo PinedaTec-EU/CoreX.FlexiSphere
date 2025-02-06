@@ -36,8 +36,15 @@ using Shouldly;
 
 namespace ark.FlexiSphere.test;
 
-public class FlexiSphereJobFactoryTest
+public class FlexiSphereJobFactoryTest : IClassFixture<TestFixture>
 {
+    private readonly TestFixture _testFixture;
+
+    public FlexiSphereJobFactoryTest(TestFixture testFixture)
+    {
+        _testFixture = testFixture;
+    }
+
     [Fact]
     public void Factory_WithOut_Settings()
     {

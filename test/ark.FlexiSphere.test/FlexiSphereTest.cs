@@ -26,14 +26,22 @@
 
 #endregion
 
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 using Shouldly;
 
 namespace ark.FlexiSphere.test;
 
-public class FlexiSphereTest
+public class FlexiSphereTest : IClassFixture<TestFixture>
 {
+    private readonly TestFixture _testFixture;
+
+    public FlexiSphereTest(TestFixture testFixture)
+    {
+        _testFixture = testFixture;
+    }
+
     [Fact]
     public async Task Start_WithOut_Settings()
     {
@@ -495,5 +503,26 @@ public class FlexiSphereTest
 
         trigger1.Verify(j => j.ActivateTrigger(It.IsAny<IFlexiSphereContext>(), It.IsAny<CancellationToken>()), Times.Once);
         trigger1.Verify(j => j.DeactivateTrigger(It.IsAny<string>(), It.IsAny<IFlexiSphereContext>()), Times.Once);
+    }
+
+    [Fact]
+    public void FlexiSphere_Setup_WithDI_NoOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere<FakeClass_FlexiSphere>();
+
+        var serviceProvider = services.BuildServiceProvider();
+        var sphereFactory = serviceProvider.GetRequiredService<IFlexiSphereComponentFactory>();
+
+        // Act
+        var sphere = sphereFactory
+            .AddTrigger(b => b.WithTriggerName("Test", "").StartOn("5 0 * 8 *").SetMaxConcurrents(5).SetMaxOccurences(5))
+            .AddJob(b => b.WithJobName("Test", "").SetJobAction((context) => Task.FromResult(true)))
+            .Build();
+
+        // Assert
+        sphere.ShouldNotBeNull();
+        sphere.ShouldBeOfType<FakeClass_FlexiSphere>();
     }
 }

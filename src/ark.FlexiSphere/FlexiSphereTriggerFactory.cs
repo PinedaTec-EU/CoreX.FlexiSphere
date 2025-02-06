@@ -93,7 +93,7 @@ public class FlexiSphereTriggerFactory : IFlexiSphereTriggerFactory
         return this;
     }
 
-    public IFlexiSphereTriggerFactory SetMaxConcurrent(int maxConcurrent)
+    public IFlexiSphereTriggerFactory SetMaxConcurrents(int maxConcurrent)
     {
         _maxConcurrents = maxConcurrent;
         return this;

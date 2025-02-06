@@ -33,8 +33,15 @@ using Shouldly;
 
 namespace ark.FlexiSphere.test;
 
-public class FlexiSphereFactoryTest
+public class FlexiSphereFactoryTest : IClassFixture<TestFixture>
 {
+    private readonly TestFixture _testFixture;
+
+    public FlexiSphereFactoryTest(TestFixture testFixture)
+    {
+        _testFixture = testFixture;
+    }
+
     [Fact]
     public void CreateFactoryInstance()
     {
@@ -181,7 +188,7 @@ public class FlexiSphereFactoryTest
 
         // Act
         var sphere = sphereFactory
-            .AddTrigger(b => b.WithTriggerName("Test", "").StartOn("5 0 * 8 *"))
+            .AddTrigger(b => b.WithTriggerName("Test", "").StartOn("5 0 * 8 *").SetMaxConcurrents(5).SetMaxOccurences(5))
             .AddJob(b => b.WithJobName("Test", "").SetJobAction((context) => Task.FromResult(true)))
             .Build();
 

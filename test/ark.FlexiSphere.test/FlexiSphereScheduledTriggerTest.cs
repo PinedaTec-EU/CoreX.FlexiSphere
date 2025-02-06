@@ -26,14 +26,22 @@
 
 #endregion
 
+using ark.extensions;
 using ark.FlexiSphere.triggers;
 
 using Shouldly;
 
 namespace ark.FlexiSphere.test;
 
-public class FlexiSphereScheduledTriggerTest
+public class FlexiSphereScheduledTriggerTest : IClassFixture<TestFixture>
 {
+    private readonly TestFixture _testFixture;
+
+    public FlexiSphereScheduledTriggerTest(TestFixture testFixture)
+    {
+        _testFixture = testFixture;
+    }
+
     [Fact]
     public void ConfigureTrigger_WhenCronExpressionIsNullOrEmpty_ShouldUseDefaultCronTime()
     {
@@ -72,16 +80,45 @@ public class FlexiSphereScheduledTriggerTest
         trigger.ConfigureTrigger("0/1 * * * * *"); // Every second
 
         // Act
+        trigger.MaxConcurrents = 1;
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
 
         bool isTriggered = false;
         trigger.OnTriggered += (sender, args) => isTriggered = true;
 
-        await TestHelper.DelayWhileAsync(5000, () => !isTriggered, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isTriggered, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
-        trigger.Counter.ShouldBeGreaterThanOrEqualTo(1);
+        trigger.Counter.ShouldBe(1);
         isTriggered.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ActivateTrigger_FireOnStart()
+    {
+        // Arrange
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
+        trigger.ConfigureTrigger("0/1 * * * * *"); // Every second
+
+        // Act
+        trigger.FireTriggerOnStart = true;
+        trigger.MaxConcurrents = 1;
+        trigger.MaxOccurrences = 2;
+        trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
+
+        bool isTriggered = false;
+        trigger.OnTriggered += (sender, args) => isTriggered = true;
+
+        await AppsHelper.DelayWhileAsync(5000, () => !isTriggered, cancellationToken: TestContext.Current.CancellationToken);
+
+        var nextExecution = trigger.GetNextOccurrence();
+
+        // Assert
+        trigger.Counter.ShouldBe(2);
+        isTriggered.ShouldBeTrue();
+
+        nextExecution.ShouldNotBeNull();
+        nextExecution.Value.ShouldBeLessThan(DateTime.Now);
     }
 
     [Fact]
@@ -101,7 +138,7 @@ public class FlexiSphereScheduledTriggerTest
 
         trigger.DeactivateTrigger("Test");
 
-        await TestHelper.DelayWhileAsync(5000, () => !isCompleted, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isCompleted, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.Counter.ShouldBe(0);
@@ -132,7 +169,7 @@ public class FlexiSphereScheduledTriggerTest
         bool isFaulted = false;
         trigger.OnFaulted += (sender, args, exception) => isFaulted = true;
 
-        await TestHelper.DelayWhileAsync(5000, () => isTriggered < 2, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => isTriggered < 2, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.Counter.ShouldBeGreaterThanOrEqualTo(2);
@@ -163,7 +200,7 @@ public class FlexiSphereScheduledTriggerTest
         bool isCompleted = false;
         trigger.OnCompleted += (sender, args) => isCompleted = true;
 
-        await TestHelper.DelayWhileAsync(5000, () => !isCompleted && isTriggered < 2, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isCompleted && isTriggered < 2, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         trigger.Counter.ShouldBe(2);
@@ -195,7 +232,7 @@ public class FlexiSphereScheduledTriggerTest
             cts.Cancel();
         };
 
-        await TestHelper.DelayWhileAsync(5000, () => !isCanceled, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isCanceled, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         isCanceled.ShouldBeTrue();
@@ -224,7 +261,7 @@ public class FlexiSphereScheduledTriggerTest
             throw new Exception("Test");
         };
 
-        await TestHelper.DelayWhileAsync(5000, () => !isFaulted, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isFaulted, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         isFaulted.ShouldBeTrue();
@@ -253,7 +290,7 @@ public class FlexiSphereScheduledTriggerTest
             throw new Exception("Test");
         };
 
-        await TestHelper.DelayWhileAsync(5000, () => !isFaulted, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(5000, () => !isFaulted, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         isCompleted.ShouldBeTrue();

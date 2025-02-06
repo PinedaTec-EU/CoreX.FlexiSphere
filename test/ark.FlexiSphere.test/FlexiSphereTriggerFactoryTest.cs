@@ -34,8 +34,15 @@ using Shouldly;
 
 namespace ark.FlexiSphere.test;
 
-public class FlexiSphereTriggerFactoryTest
+public class FlexiSphereTriggerFactoryTest : IClassFixture<TestFixture>
 {
+    private readonly TestFixture _testFixture;
+
+    public FlexiSphereTriggerFactoryTest(TestFixture testFixture)
+    {
+        _testFixture = testFixture;
+    }
+
     [Fact]
     public void Factory_WithOut_Settings()
     {
@@ -71,7 +78,7 @@ public class FlexiSphereTriggerFactoryTest
         factory
             .WithTriggerName("Test", "TestGroup")
             .SetMaxOccurences(5)
-            .SetMaxConcurrent(7)
+            .SetMaxConcurrents(7)
             .ActivateOnAction((context) => Task.FromResult(true));
 
         // Act
@@ -94,7 +101,7 @@ public class FlexiSphereTriggerFactoryTest
             .FireTriggerOnStart(true)
             .WithTriggerName("Test", "TestGroup")
             .SetMaxOccurences(5)
-            .SetMaxConcurrent(7)
+            .SetMaxConcurrents(7)
             .ActivateOnAction((context) => Task.FromResult(true));
 
         // Act
@@ -117,7 +124,7 @@ public class FlexiSphereTriggerFactoryTest
         // Arrange
         var factory = new FlexiSphereTriggerFactory();
         factory.SetMaxOccurences(5)
-            .SetMaxConcurrent(0)
+            .SetMaxConcurrents(0)
             .ActivateOnAction((context) => Task.FromResult(true));
 
         // Act
@@ -139,7 +146,7 @@ public class FlexiSphereTriggerFactoryTest
         factory
             .FireTriggerOnStart(true)
             .StartOn("0 0/20 * * * *")
-            .SetMaxConcurrent(5)
+            .SetMaxConcurrents(5)
             .SetMaxOccurences(7);
 
         // Act
@@ -162,7 +169,7 @@ public class FlexiSphereTriggerFactoryTest
         // Arrange
         var factory = new FlexiSphereTriggerFactory();
         factory.StartOn("0 0/20 * * * *")
-            .SetMaxConcurrent(0)
+            .SetMaxConcurrents(0)
             .SetMaxOccurences(7);
 
         // Act
@@ -179,7 +186,7 @@ public class FlexiSphereTriggerFactoryTest
         // Arrange
         var factory = new FlexiSphereTriggerFactory();
         factory.StartOn("abcdefgh")
-            .SetMaxConcurrent(5)
+            .SetMaxConcurrents(5)
             .SetMaxOccurences(7);
 
         // Act

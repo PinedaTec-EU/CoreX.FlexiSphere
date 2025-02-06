@@ -32,8 +32,15 @@ using Shouldly;
 
 namespace ark.FlexiSphere.test;
 
-public class FlexiSphereJobTest
+public class FlexiSphereJobTest : IClassFixture<TestFixture>
 {
+    private readonly TestFixture _testFixture;
+
+    public FlexiSphereJobTest(TestFixture testFixture)
+    {
+        _testFixture = testFixture;
+    }
+
     [Fact]
     public void ConfigureJob_WhenJobNameIsNullOrEmpty_ShouldThrowException()
     {
@@ -123,6 +130,30 @@ public class FlexiSphereJobTest
 
         bool isFaulted = false;
         job.OnFaulted += (sender, context, exception) => isFaulted = true;
+
+        // Act
+        var action = () => job.ExecuteAsync(null, TestContext.Current.CancellationToken);
+
+        // Assert
+        await action.ShouldNotThrowAsync();
+        isFaulted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WhenException_OnFaulted()
+    {
+        // Arrange
+        IFlexiSphereJob job = new FlexiSphereJob();
+        var jobName = "TestJob";
+        var jobAction = new Func<IFlexiSphereContext?, Task>(context => throw new Exception());
+        job.ConfigureJob(jobName, null, jobAction);
+
+        bool isFaulted = false;
+        job.OnFaulted += (sender, context, exception) =>
+        {
+            isFaulted = true;
+            throw new Exception();
+        };
 
         // Act
         var action = () => job.ExecuteAsync(null, TestContext.Current.CancellationToken);
