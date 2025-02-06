@@ -16,7 +16,7 @@
 		<license type="file">LICENSE</license>
 		<dependencies>
 			<group targetFramework=".NETCoreApp9.0">
-				<dependency id="ark.extensions" version="0.6.0" />
+				<dependency id="ark.extensions" version="0.7.0" />
 				<dependency id="Cronos" version="0.9.0" />
 				<dependency id="NLog" version="5.3.4" />
 				<dependency id="System.Threading.RateLimiting" version="9.0.1" />
