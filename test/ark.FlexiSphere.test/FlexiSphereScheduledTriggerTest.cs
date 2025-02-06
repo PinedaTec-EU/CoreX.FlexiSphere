@@ -38,7 +38,7 @@ public class FlexiSphereScheduledTriggerTest
     public void ConfigureTrigger_WhenCronExpressionIsNullOrEmpty_ShouldUseDefaultCronTime()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         var cronExpression = string.Empty;
 
         // Act
@@ -52,7 +52,7 @@ public class FlexiSphereScheduledTriggerTest
     public void ConfigureTrigger_ShouldUseCronExpression()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         var cronExpression = "0 0/20 * * * *";
 
         // Act
@@ -68,7 +68,7 @@ public class FlexiSphereScheduledTriggerTest
     public async Task ActivateTrigger()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         trigger.ConfigureTrigger("0/1 * * * * *"); // Every second
 
         // Act
@@ -88,7 +88,7 @@ public class FlexiSphereScheduledTriggerTest
     public async Task DeactivateTrigger()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         trigger.ConfigureTrigger("0 0 0 * * *"); // Every day at 00:00h
 
         // Act
@@ -113,7 +113,7 @@ public class FlexiSphereScheduledTriggerTest
     public async Task ActivateTrigger_LimitConcurrences()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         trigger.ConfigureTrigger("0/1 * * * * *", 2); // Every second
         trigger.MaxConcurrent.ShouldBe(2);
 
@@ -145,7 +145,7 @@ public class FlexiSphereScheduledTriggerTest
     public async Task ActivateTrigger_LimitOccurrences()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         trigger.ConfigureTrigger("0/1 * * * * *"); // Every second
         trigger.MaxOccurrences = 2;
         // trigger.MaxConcurrent = 0;
@@ -174,7 +174,7 @@ public class FlexiSphereScheduledTriggerTest
     public async Task ActivateTrigger_Cancel()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         trigger.ConfigureTrigger("0/1 * * * * *"); // Every second
 
         using CancellationTokenSource cts = new();
@@ -207,7 +207,7 @@ public class FlexiSphereScheduledTriggerTest
     public async Task ActivateTrigger_Faulted_OnTriggered()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         trigger.ConfigureTrigger("0/1 * * * * *"); // Every second
         trigger.MaxOccurrences = 2;
 
@@ -236,9 +236,9 @@ public class FlexiSphereScheduledTriggerTest
     public async Task ActivateTrigger_Faulted_OnCompleted()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
-        trigger.ConfigureTrigger("0/1 * * * * *", 10, 2); // Every second
-        trigger.MaxOccurrences.ShouldBe(2);
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
+        trigger.ConfigureTrigger("0/1 * * * * *", 10, 1); // Every second
+        trigger.MaxOccurrences.ShouldBe(1);
 
         // Act
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
@@ -256,15 +256,15 @@ public class FlexiSphereScheduledTriggerTest
         await TestHelper.DelayWhileAsync(5000, () => !isFaulted, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
-        isFaulted.ShouldBeTrue();
         isCompleted.ShouldBeTrue();
+        isFaulted.ShouldBeTrue();
     }
 
     [Fact]
     public void ConfigureTrigger_InvalidCronExpression()
     {
         // Arrange
-        var trigger = new FlexiSphereScheduledTrigger();
+        IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         var cronExpression = "abcdefg";
 
         // Act

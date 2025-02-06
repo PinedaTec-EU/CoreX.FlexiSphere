@@ -85,7 +85,8 @@ public static class TestHelper
     /// <param name="cancellationToken"></param>
     /// <param name="caller"></param>
     /// <returns></returns>
-    public static async Task<bool> DelayWhileAsync(TimeSpan timeout, Expression<Func<bool>> action, int peekingPeriod = 250, CancellationToken cancellationToken = default, [ConstantExpected][CallerMemberName] string caller = "")
+    public static async Task<bool> DelayWhileAsync(TimeSpan timeout, Expression<Func<bool>> action, int peekingPeriod = 250, CancellationToken cancellationToken = default,
+        [ConstantExpected][CallerMemberName] string caller = "")
     {
         var logger = LogManager.GetCurrentClassLogger();
         var sw = Stopwatch.StartNew();
