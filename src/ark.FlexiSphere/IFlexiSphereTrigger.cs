@@ -68,7 +68,7 @@ public interface IFlexiSphereTrigger : IFlexiSphereComponent
     /// <summary>
     /// Gets or sets the maximum concurrent occurrences of the trigger.
     /// </summary>
-    int MaxConcurrent { get; set; }
+    int MaxConcurrents { get; set; }
 
     /// <summary>
     /// Gets the counter of the trigger executions.

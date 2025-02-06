@@ -80,7 +80,7 @@ public class FlexiSphereTriggerFactoryTest
         // Assert
         trigger.ShouldNotBeNull();
         trigger.MaxOccurrences.ShouldBe(5);
-        trigger.MaxConcurrent.ShouldBe(7);
+        trigger.MaxConcurrents.ShouldBe(7);
 
         trigger.TriggerName.ShouldBe("Test");
     }
@@ -103,7 +103,7 @@ public class FlexiSphereTriggerFactoryTest
         // Assert
         trigger.ShouldNotBeNull();
         trigger.MaxOccurrences.ShouldBe(5);
-        trigger.MaxConcurrent.ShouldBe(7);
+        trigger.MaxConcurrents.ShouldBe(7);
 
         trigger.TriggerName.ShouldBe("Test");
         trigger.FireTriggerOnStart.ShouldBeTrue();
@@ -148,7 +148,7 @@ public class FlexiSphereTriggerFactoryTest
         // Assert
         trigger.ShouldNotBeNull();
         trigger.MaxOccurrences.ShouldBe(7);
-        trigger.MaxConcurrent.ShouldBe(5);
+        trigger.MaxConcurrents.ShouldBe(5);
 
         var triggerScheduled = trigger as FlexiSphereScheduledTrigger;
         triggerScheduled.ShouldNotBeNull();

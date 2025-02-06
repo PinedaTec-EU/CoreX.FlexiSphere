@@ -46,7 +46,7 @@ public class FlexiSphereEventTriggerTest
 
         // Assert
         trigger.ShouldNotBeNull();
-        trigger.MaxConcurrent.ShouldBe(5);
+        trigger.MaxConcurrents.ShouldBe(5);
         trigger.MaxOccurrences.ShouldBe(7);
     }
 
@@ -164,7 +164,7 @@ public class FlexiSphereEventTriggerTest
         });
 
         trigger.ConfigureTrigger(action, 250);
-        trigger.MaxConcurrent = 2;
+        trigger.MaxConcurrents = 2;
 
         int isTriggered = 0;
         trigger.OnTriggered += (sender, args) =>

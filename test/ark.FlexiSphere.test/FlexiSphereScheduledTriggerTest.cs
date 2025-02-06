@@ -60,7 +60,7 @@ public class FlexiSphereScheduledTriggerTest
 
         // Assert
         trigger.CronTime.ShouldBe("0,20,40 * * * *");
-        trigger.MaxConcurrent.ShouldBe(5);
+        trigger.MaxConcurrents.ShouldBe(5);
         trigger.MaxOccurrences.ShouldBe(7);
     }
 
@@ -115,7 +115,7 @@ public class FlexiSphereScheduledTriggerTest
         // Arrange
         IFlexiSphereScheduledTrigger trigger = new FlexiSphereScheduledTrigger();
         trigger.ConfigureTrigger("0/1 * * * * *", 2); // Every second
-        trigger.MaxConcurrent.ShouldBe(2);
+        trigger.MaxConcurrents.ShouldBe(2);
 
         // Act
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);

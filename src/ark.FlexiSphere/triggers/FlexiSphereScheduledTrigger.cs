@@ -34,7 +34,7 @@ using NLog;
 
 namespace ark.FlexiSphere.triggers;
 
-public class FlexiSphereScheduledTrigger : FlexiSphereTriggerBase, IFlexiSphereScheduledTrigger
+public sealed class FlexiSphereScheduledTrigger : FlexiSphereTriggerBase, IFlexiSphereScheduledTrigger
 {
     public string CronTime { get => _cronExpression?.ToString() ?? "0 0/5 * * * *"; }
 
@@ -44,13 +44,13 @@ public class FlexiSphereScheduledTrigger : FlexiSphereTriggerBase, IFlexiSphereS
 
     public void ConfigureTrigger(string? cronExpression, int maxConcurrent = 100, int maxOccurences = 0)
     {
-        this.MaxConcurrent = maxConcurrent;
+        this.MaxConcurrents = maxConcurrent;
         this.MaxOccurrences = maxOccurences;
 
         try
         {
-            (this.MaxConcurrent < 1).ThrowArgumentExceptionIfTrue(nameof(maxConcurrent),
-                $"{nameof(this.MaxConcurrent)} must be greater than 0!");
+            (this.MaxConcurrents < 1).ThrowArgumentExceptionIfTrue(nameof(maxConcurrent),
+                $"{nameof(this.MaxConcurrents)} must be greater than 0!");
 
             if (string.IsNullOrEmpty(cronExpression))
             {
@@ -79,7 +79,7 @@ public class FlexiSphereScheduledTrigger : FlexiSphereTriggerBase, IFlexiSphereS
         _logger.Info("Activating trigger on start is {0}.", this.FireTriggerOnStart.ToEnabledDisabled());
 
         _context = context;
-        _semaphore = new SemaphoreSlim(this.MaxConcurrent);
+        _semaphore = new SemaphoreSlim(this.MaxConcurrents);
 
         _timer = new Timer(async (state) => await TimerCallback(state), cancellationToken, Timeout.Infinite, Timeout.Infinite);
 

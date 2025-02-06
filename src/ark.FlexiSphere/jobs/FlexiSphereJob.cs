@@ -36,7 +36,7 @@ using NLog;
 namespace ark.FlexiSphere.jobs;
 
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
-public class FlexiSphereJob : IFlexiSphereJob
+public sealed class FlexiSphereJob : IFlexiSphereJob
 {
     public event FlexiSphereJobExceptionHandler<Exception>? OnFaulted;
 
@@ -124,7 +124,7 @@ public class FlexiSphereJob : IFlexiSphereJob
         }
     }
 
-    protected void RaiseOnJobFaulted(Exception exception, IFlexiSphereContext? context = null)
+    private void RaiseOnJobFaulted(Exception exception, IFlexiSphereContext? context = null)
     {
         try
         {
