@@ -27,75 +27,80 @@
 #endregion
 
 using ark.extensions;
+using Microsoft.Extensions.Options;
 
 namespace ark.FlexiSphere;
 
-public class FlexiSphereFactory : IFlexiSphereFactory
+public class FlexiSphereFactory : IFlexiSphereComponentFactory
 {
-    private IFlexiSphere _FlexiSphere;
+    private IFlexiSphere _flexiSphere;
 
     private IFlexiSphereTriggerFactory? _triggerFactory;
     private IFlexiSphereJobFactory? _jobFactory;
 
-    public static IFlexiSphereFactory Create(IFlexiSphereTriggerFactory? triggerFactory = null, IFlexiSphereJobFactory? jobFactory = null)
+    public static IFlexiSphereComponentFactory Create(IFlexiSphere? flexiSphere = null, IFlexiSphereTriggerFactory? triggerFactory = null, IFlexiSphereJobFactory? jobFactory = null) =>
+        new FlexiSphereFactory(flexiSphere, triggerFactory, jobFactory);
+
+    public FlexiSphereFactory(IFlexiSphere? flexiSphere = null, IFlexiSphereTriggerFactory? triggerFactory = null, IFlexiSphereJobFactory? jobFactory = null, IOptions<FlexiSphereFactoryOptions>? options = null)
     {
+        if (options is not null)
+        {
+            // Nothing to do here
+        }
+
         triggerFactory ??= new FlexiSphereTriggerFactory();
         jobFactory ??= new FlexiSphereJobFactory();
 
-        return new FlexiSphereFactory(triggerFactory, jobFactory);
-    }
-
-    public FlexiSphereFactory(IFlexiSphereTriggerFactory triggerFactory, IFlexiSphereJobFactory jobFactory)
-    {
         _triggerFactory = triggerFactory;
         _triggerFactory.SetOwner(this);
 
         _jobFactory = jobFactory;
         _jobFactory.SetOwner(this);
 
-        _FlexiSphere = new FlexiSphere();
+        flexiSphere ??= new FlexiSphere();
+        _flexiSphere = flexiSphere;
     }
 
-    public IFlexiSphereFactory AddJob(IFlexiSphereJob job)
+    public IFlexiSphereComponentFactory AddJob(IFlexiSphereJob job)
     {
         job.ThrowArgumentExceptionIfNull(nameof(job));
 
-        _FlexiSphere.AddJob(job);
+        _flexiSphere.AddJob(job);
         return this;
     }
 
-    public IFlexiSphereFactory AddJob(Action<IFlexiSphereJobFactory> action)
+    public IFlexiSphereComponentFactory AddJob(Action<IFlexiSphereJobFactory> action)
     {
         action.ThrowArgumentExceptionIfNull(nameof(action));
 
         var Factory = _jobFactory ?? FlexiSphereJobFactory.Create();
         action(Factory);
 
-        _FlexiSphere.AddJob(Factory.Build());
+        _flexiSphere.AddJob(Factory.Build());
 
         return this;
     }
 
-    public IFlexiSphereFactory AddTrigger(IFlexiSphereTrigger trigger)
+    public IFlexiSphereComponentFactory AddTrigger(IFlexiSphereTrigger trigger)
     {
         trigger.ThrowArgumentExceptionIfNull(nameof(trigger));
 
-        _FlexiSphere.AddTrigger(trigger);
+        _flexiSphere.AddTrigger(trigger);
         return this;
     }
 
-    public IFlexiSphereFactory AddTrigger(Action<IFlexiSphereTriggerFactory> action)
+    public IFlexiSphereComponentFactory AddTrigger(Action<IFlexiSphereTriggerFactory> action)
     {
         action.ThrowArgumentExceptionIfNull(nameof(action));
 
         var Factory = _triggerFactory ?? FlexiSphereTriggerFactory.Create();
         action(Factory);
 
-        _FlexiSphere.AddTrigger(Factory.Build());
+        _flexiSphere.AddTrigger(Factory.Build());
 
         return this;
     }
 
     public IFlexiSphere Build() =>
-        _FlexiSphere;
+        _flexiSphere;
 }

@@ -27,13 +27,14 @@
 #endregion
 using ark.extensions;
 using ark.FlexiSphere.triggers;
+using Microsoft.Extensions.Options;
 
 namespace ark.FlexiSphere;
 
 public class FlexiSphereTriggerFactory : IFlexiSphereTriggerFactory
 {
     private int _maxOccurences = 0;
-    private int _maxConcurrent = 1;
+    private int _maxConcurrents = 1;
     private int _delay = 1000;
     private Func<IFlexiSphereContext?, Task<bool>>? _eventAction;
     private string? _cronExpression = null;
@@ -46,7 +47,32 @@ public class FlexiSphereTriggerFactory : IFlexiSphereTriggerFactory
     public static IFlexiSphereTriggerFactory Create() =>
         new FlexiSphereTriggerFactory();
 
-    public IFlexiSphereTriggerFactory SetOwner(IFlexiSphereFactory owner)
+    public FlexiSphereTriggerFactory()
+    { }
+
+    public FlexiSphereTriggerFactory(IOptions<FlexiSphereTriggerFactoryOptions>? options)
+        : this()
+    {
+        if (options is not null)
+        {
+            _maxOccurences = options.Value.MaxOccurrences;
+            _maxConcurrents = options.Value.MaxConcurrents;
+            _fireOnStart = options.Value.FireTriggerOnStart;
+        }
+    }
+
+    public FlexiSphereTriggerFactory(FlexiSphereTriggerFactoryOptions options)
+        : this()
+    {
+        if (options is not null)
+        {
+            _maxOccurences = options.MaxOccurrences;
+            _maxConcurrents = options.MaxConcurrents;
+            _fireOnStart = options.FireTriggerOnStart;
+        }
+    }
+
+    public IFlexiSphereTriggerFactory SetOwner(IFlexiSphereComponentFactory owner)
     {
         return this;
     }
@@ -67,9 +93,9 @@ public class FlexiSphereTriggerFactory : IFlexiSphereTriggerFactory
         return this;
     }
 
-    public IFlexiSphereTriggerFactory SetMaxConcurrent(int maxConcurrent)
+    public IFlexiSphereTriggerFactory SetMaxConcurrents(int maxConcurrent)
     {
-        _maxConcurrent = maxConcurrent;
+        _maxConcurrents = maxConcurrent;
         return this;
     }
 
@@ -109,7 +135,7 @@ public class FlexiSphereTriggerFactory : IFlexiSphereTriggerFactory
     private IFlexiSphereTrigger CreateEventTrigger()
     {
         var trigger = new FlexiSphereEventTrigger();
-        trigger.ConfigureTrigger(_eventAction!, _delay, _maxConcurrent, _maxOccurences);
+        trigger.ConfigureTrigger(_eventAction!, _delay, _maxConcurrents, _maxOccurences);
         trigger.TriggerName = _triggerName!;
 
         if (_fireOnStart)
@@ -123,7 +149,7 @@ public class FlexiSphereTriggerFactory : IFlexiSphereTriggerFactory
     private IFlexiSphereTrigger CreateScheduledTrigger()
     {
         var trigger = new FlexiSphereScheduledTrigger();
-        trigger.ConfigureTrigger(_cronExpression, _maxConcurrent, _maxOccurences);
+        trigger.ConfigureTrigger(_cronExpression, _maxConcurrents, _maxOccurences);
         trigger.TriggerName = _triggerName!;
 
         if (_fireOnStart)

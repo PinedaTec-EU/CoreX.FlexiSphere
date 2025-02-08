@@ -3,5 +3,47 @@
         {
             "path": "."
         }
-    ]
+    ],
+    "settings": {
+        "logViewer.options": {},
+        "logViewer.watch": [
+            {
+                "title": "NLog internal",
+                "pattern": "${workspaceFolder}/test/ark.FlexiSphere.test/bin/Debug/net9.0/app.logs/nlog-internal*.log"
+            },
+            {
+                "title": "Test Apps",
+                "pattern": "${workspaceFolder}/test/ark.FlexiSphere.test/bin/Debug/net9.0/app.logs/test.*.log"
+            }
+        ],
+        "azureTerraform.terminal": "integrated",
+        "explorer.fileNesting.enabled": true,
+        "explorer.fileNesting.patterns": {
+            "*.config.def": "${capture}.*.config.json, ${capture}.config.vars.json"
+        },
+        "explorer.fileNesting.expand": false,
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.minimap.maxColumn": 120,
+        "dotnet.automaticallySyncWithActiveItem": true,
+        "csharp.preview.improvedLaunchExperience": true,
+        "gitlens.currentLine.pullRequests.enabled": false,
+        "github.copilot.advanced": {
+            "enabled": true
+        },
+        "docomment.advanced": {},
+        "testing.coverageToolbarEnabled": true,
+        "testing.coverageBarThresholds": {
+            "red": 0,
+            "yellow": 60,
+            "green": 90
+        },
+        "fileheaders.fileExtensions": [
+            ".cs",
+            ".ts"
+        ],
+        "csharpextensions.privateMemberPrefix": "_",
+        "editor.tabSize": 4,
+        "editor.detectIndentation": true,
+    }
 }

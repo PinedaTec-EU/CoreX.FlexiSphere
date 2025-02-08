@@ -28,14 +28,14 @@
 
 namespace ark.FlexiSphere;
 
-public interface IFlexiSphereJobFactory
+public interface IFlexiSphereJobFactory : IFlexiSphereFactory
 {
     /// <summary>
     /// Sets the owner of the job
     /// </summary>
     /// <param name="owner"></param>
     /// <returns></returns>
-    IFlexiSphereJobFactory SetOwner(IFlexiSphereFactory owner);
+    IFlexiSphereJobFactory SetOwner(IFlexiSphereComponentFactory owner);
 
     /// <summary>
     /// Defines the job name and group
@@ -43,7 +43,7 @@ public interface IFlexiSphereJobFactory
     /// <param name="jobName"></param>
     /// <param name="jobGroup"></param>
     /// <returns></returns>
-    IFlexiSphereJobFactory WithJobName(string jobName, string jobGroup);
+    IFlexiSphereJobFactory WithJobName(string jobName, string? jobGroup);
 
     /// <summary>
     /// Sets the maximum number of concurrent executions

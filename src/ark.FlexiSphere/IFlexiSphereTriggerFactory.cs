@@ -28,14 +28,14 @@
 
 namespace ark.FlexiSphere;
 
-public interface IFlexiSphereTriggerFactory
+public interface IFlexiSphereTriggerFactory : IFlexiSphereFactory
 {
     /// <summary>
     /// Set the owener for the trigger
     /// </summary>
     /// <param name="owner"></param>
     /// <returns></returns>
-    IFlexiSphereTriggerFactory SetOwner(IFlexiSphereFactory owner);
+    IFlexiSphereTriggerFactory SetOwner(IFlexiSphereComponentFactory owner);
 
     /// <summary>
     /// Set the trigger name and group
@@ -57,7 +57,7 @@ public interface IFlexiSphereTriggerFactory
     /// </summary>
     /// <param name="maxConcurrent"></param>
     /// <returns></returns> 
-    IFlexiSphereTriggerFactory SetMaxConcurrent(int maxConcurrent);
+    IFlexiSphereTriggerFactory SetMaxConcurrents(int maxConcurrent);
 
     /// <summary>
     /// Define the action to be executed <c ref="FlexiSphereEventTrigger" />

@@ -26,6 +26,8 @@
 
 #endregion
 
+using Microsoft.Extensions.DependencyInjection;
+
 using ark.FlexiSphere.jobs;
 
 using Moq;
@@ -34,8 +36,15 @@ using Shouldly;
 
 namespace ark.FlexiSphere.test;
 
-public class FlexiSphereJobFactoryTest
+public class FlexiSphereJobFactoryTest : IClassFixture<TestFixture>
 {
+    private readonly TestFixture _testFixture;
+
+    public FlexiSphereJobFactoryTest(TestFixture testFixture)
+    {
+        _testFixture = testFixture;
+    }
+
     [Fact]
     public void Factory_WithOut_Settings()
     {
@@ -55,7 +64,7 @@ public class FlexiSphereJobFactoryTest
         var factory = FlexiSphereJobFactory.Create();
 
         // Act
-        var action = () => factory.SetOwner(new Mock<IFlexiSphereFactory>().Object);
+        var action = () => factory.SetOwner(new Mock<IFlexiSphereComponentFactory>().Object);
 
         // Assert
         action.ShouldNotThrow();
@@ -168,6 +177,178 @@ public class FlexiSphereJobFactoryTest
     }
 
     [Fact]
+    public void Factory_Setup_WithJobAction_JobType()
+    {
+        // Arrange
+        var jobFactory = FlexiSphereJobFactory.Create();
+        var jobName = "TestJob";
+        var jobGroup = "TestGroup";
+        var maxOccurences = 5;
+
+        var jobAction = new Func<IFlexiSphereContext?, Task<bool>>((context) =>
+        {
+            return Task.FromResult(true);
+        });
+
+        // Act
+        var action = () => jobFactory.WithJobName(jobName, jobGroup)
+            .SetMaxConcurrents(maxOccurences)
+            .SetJobAction(jobAction)
+            .DefineJob(typeof(FlexiSphereJob))
+            .Build();
+
+        // Assert
+        action.ShouldThrow<FlexiSphereException>();
+    }
+
+
+    [Fact]
+    public void Factory_Setup_WithJobType_JobAction()
+    {
+        // Arrange
+        var jobFactory = FlexiSphereJobFactory.Create();
+        var jobName = "TestJob";
+        var jobGroup = "TestGroup";
+        var maxOccurences = 5;
+
+        var jobAction = new Func<IFlexiSphereContext?, Task<bool>>((context) =>
+        {
+            return Task.FromResult(true);
+        });
+
+        // Act
+        var action = () => jobFactory.WithJobName(jobName, jobGroup)
+            .SetMaxConcurrents(maxOccurences)
+            .DefineJob(typeof(FlexiSphereJob))
+            .SetJobAction(jobAction)
+            .Build();
+
+        // Assert
+        action.ShouldThrow<FlexiSphereException>();
+    }
+
+
+    [Fact]
+    public void Factory_Setup_WithJobAction_Null()
+    {
+        // Arrange
+        var jobFactory = FlexiSphereJobFactory.Create();
+        var jobName = "TestJob";
+        var jobGroup = "TestGroup";
+        var maxOccurences = 5;
+
+        var jobAction = new Func<IFlexiSphereContext?, Task<bool>>((context) =>
+        {
+            return Task.FromResult(true);
+        });
+
+        // Act
+        var action = () => jobFactory.WithJobName(jobName, jobGroup)
+            .SetMaxConcurrents(maxOccurences)
+            .SetJobAction(null!)
+            .Build();
+
+        // Assert
+        action.ShouldThrow<FlexiSphereException>();
+    }
+
+    [Fact]
+    public void Factory_Setup_WithJobAction_JobInstance()
+    {
+        // Arrange
+        var jobFactory = FlexiSphereJobFactory.Create();
+        var jobName = "TestJob";
+        var jobGroup = "TestGroup";
+        var maxOccurences = 5;
+
+        var jobAction = new Func<IFlexiSphereContext?, Task<bool>>((context) =>
+        {
+            return Task.FromResult(true);
+        });
+
+        // Act
+        var action = () => jobFactory.WithJobName(jobName, jobGroup)
+            .SetMaxConcurrents(maxOccurences)
+            .SetJobAction(jobAction)
+            .DefineJob(new FlexiSphereJob())
+            .Build();
+
+        // Assert
+        action.ShouldThrow<FlexiSphereException>();
+    }
+
+    [Fact]
+    public void Factory_Setup_WithJobInstance_JobAction()
+    {
+        // Arrange
+        var jobFactory = FlexiSphereJobFactory.Create();
+        var jobName = "TestJob";
+        var jobGroup = "TestGroup";
+        var maxOccurences = 5;
+
+        var jobAction = new Func<IFlexiSphereContext?, Task<bool>>((context) =>
+        {
+            return Task.FromResult(true);
+        });
+
+        // Act
+        var action = () => jobFactory.WithJobName(jobName, jobGroup)
+            .SetMaxConcurrents(maxOccurences)
+            .DefineJob(new FlexiSphereJob())
+            .SetJobAction(jobAction)
+            .Build();
+
+        // Assert
+        action.ShouldThrow<FlexiSphereException>();
+    }
+
+    [Fact]
+    public void Factory_Setup_JobInstance_JobType()
+    {
+        // Arrange
+        var jobFactory = FlexiSphereJobFactory.Create();
+        var jobName = "TestJob";
+        var jobGroup = "TestGroup";
+        var maxOccurences = 5;
+
+        var jobAction = new Func<IFlexiSphereContext?, Task<bool>>((context) =>
+        {
+            return Task.FromResult(true);
+        });
+
+        // Act
+        var action = () => jobFactory.WithJobName(jobName, jobGroup)
+            .SetMaxConcurrents(maxOccurences)
+            .DefineJob(typeof(FlexiSphereJob))
+            .DefineJob(new FlexiSphereJob())
+            .Build();
+
+        // Assert
+        action.ShouldThrow<FlexiSphereException>();
+    }
+
+    [Fact]
+    public void Factory_Setup_WithJobInstance_Null()
+    {
+        // Arrange
+        var jobFactory = FlexiSphereJobFactory.Create();
+        var jobName = "TestJob";
+        var jobGroup = "TestGroup";
+        var maxOccurences = 5;
+
+        var mockJob = new Mock<IFlexiSphereJob>();
+
+        // Act
+        var action = () => jobFactory.WithJobName(jobName, jobGroup)
+            .SetMaxConcurrents(maxOccurences)
+            .DefineJob<FlexiSphereJob>(null!)
+            .Build();
+
+        // Assert
+        action.ShouldThrow<FlexiSphereException>();
+    }
+
+    [Fact]
     public void Factory_Setup_WithJobInstance()
     {
         // Arrange
@@ -213,5 +394,111 @@ public class FlexiSphereJobFactoryTest
         job.MaxConcurrents.ShouldBe(maxOccurences);
 
         job.IsRateLimiterEnabled.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Factory_Setup_WithJobType_Null()
+    {
+        // Arrange
+        var jobFactory = FlexiSphereJobFactory.Create();
+        var jobName = "TestJob";
+        var jobGroup = "TestGroup";
+        var maxOccurences = 5;
+
+        // Act
+        var action = () => jobFactory.WithJobName(jobName, jobGroup)
+            .SetMaxConcurrents(maxOccurences)
+            .DefineJob(null!)
+            .Build();
+
+        // Assert
+        action.ShouldThrow<FlexiSphereException>();
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDirect_Options()
+    {
+        // Arrange
+        FlexiSphereJobFactoryOptions options = new();
+        options.MaxConcurrents = 5;
+
+        var jobFactory = new FlexiSphereJobFactory(options);
+
+        // Act
+        var job = jobFactory.WithJobName("TestJob", "TestGroup")
+            .SetJobAction(context => Task.FromResult(true))
+            .Build();
+
+        // Assert
+        job.ShouldNotBeNull();
+        job.MaxConcurrents.ShouldBe(5);
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDI()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere(options =>
+        {
+            options.JobFactoryOptions = new();
+            options.JobFactoryOptions.MaxConcurrents = 5;
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var jobFactory = serviceProvider.GetRequiredService<IFlexiSphereJobFactory>();
+
+        // Act
+        var job = jobFactory.WithJobName("TestJob", "TestGroup")
+            .SetJobAction(context => Task.FromResult(true))
+            .Build();
+
+        // Assert
+        job.ShouldNotBeNull();
+        job.MaxConcurrents.ShouldBe(5);
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDI_JobFactory_CustomOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere<FakeClass_FlexiSphereJobFactory>(options =>
+        {
+            options.JobFactoryOptions = new();
+            options.JobFactoryOptions.MaxConcurrents = 5;
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var jobFactory = serviceProvider.GetRequiredService<IFlexiSphereJobFactory>();
+
+        // Act
+        var job = jobFactory.WithJobName("TestJob", "TestGroup")
+            .SetJobAction(context => Task.FromResult(true))
+            .Build();
+
+        // Assert
+        job.ShouldNotBeNull();
+        job.ShouldBeOfType<FakeClass_FlexiSphereJob>();
+    }
+
+    [Fact]
+    public void Factory_Setup_WithDI_JobFactory_NoOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere<FakeClass_FlexiSphereJobFactory>();
+
+        var serviceProvider = services.BuildServiceProvider();
+        var jobFactory = serviceProvider.GetRequiredService<IFlexiSphereJobFactory>();
+
+        // Act
+        var job = jobFactory.WithJobName("TestJob", "TestGroup")
+            .SetJobAction(context => Task.FromResult(true))
+            .Build();
+
+        // Assert
+        job.ShouldNotBeNull();
+        job.ShouldBeOfType<FakeClass_FlexiSphereJob>();
     }
 }

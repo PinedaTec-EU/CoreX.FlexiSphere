@@ -40,14 +40,14 @@ public abstract class FlexiSphereTriggerBase : IFlexiSphereTrigger
     public event FlexiSphereTriggerExceptionHandler<FlexiSphereException>? OnFaulted;
 
     public int MaxOccurrences { get; set; } = 0;
-    public int MaxConcurrent { get; set; } = 1;
+    public int MaxConcurrents { get; set; } = 1;
     public int Counter { get => _counter; }
 
     public string TriggerName { get; set; } = "FlexiSphereTrigger";
 
     public bool FireTriggerOnStart { get; set; } = false;
 
-    public int PressureCounter => this.MaxConcurrent - _semaphore?.CurrentCount ?? 0;
+    public int PressureCounter => this.MaxConcurrents - _semaphore?.CurrentCount ?? 0;
 
     protected Timer? _timer;
     protected IFlexiSphereContext? _context;
@@ -61,17 +61,17 @@ public abstract class FlexiSphereTriggerBase : IFlexiSphereTrigger
 
     protected virtual void ConfigureTrigger(int delay = 1000, int maxConcurrent = 1, int maxOccurences = 0)
     {
-        this.MaxConcurrent = maxConcurrent;
+        this.MaxConcurrents = maxConcurrent;
         this.MaxOccurrences = maxOccurences;
 
         _delay = delay;
 
-        (this.MaxConcurrent < 1).ThrowExceptionIfTrue<ArgumentOutOfRangeException>(
-            $"{nameof(this.MaxConcurrent)} must be greater than 0!");
+        (this.MaxConcurrents < 1).ThrowExceptionIfTrue<ArgumentOutOfRangeException>(
+            $"{nameof(this.MaxConcurrents)} must be greater than 0!");
         // (this.MaxOccurrences < 1).ThrowExceptionIfTrue<ArgumentOutOfRangeException>(nameof(maxOccurences),
         //     "The maximum number of occurrences must be greater than 0!");
 
-        _logger.Info($"The trigger {this.TriggerName} has been configured with a delay of {_delay} ms, a maximum of {this.MaxConcurrent} " +
+        _logger.Info($"The trigger {this.TriggerName} has been configured with a delay of {_delay} ms, a maximum of {this.MaxConcurrents} " +
             $"concurrent executions and a maximum of {(this.MaxOccurrences != 0 ? this.MaxOccurrences : "unlimited")} occurrences.");
     }
 
@@ -80,7 +80,7 @@ public abstract class FlexiSphereTriggerBase : IFlexiSphereTrigger
         _logger.Info($"Activating trigger {this.TriggerName}...");
 
         _context = context;
-        _semaphore = new SemaphoreSlim(this.MaxConcurrent);
+        _semaphore = new SemaphoreSlim(this.MaxConcurrents);
 
         if (_delay == 0)
         {

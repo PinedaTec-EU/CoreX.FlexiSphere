@@ -31,7 +31,7 @@ using NLog;
 
 namespace ark.FlexiSphere.triggers;
 
-public class FlexiSphereEventTrigger : FlexiSphereTriggerBase, IFlexiSphereEventTrigger
+public sealed class FlexiSphereEventTrigger : FlexiSphereTriggerBase, IFlexiSphereEventTrigger
 {
     private Func<IFlexiSphereContext?, Task<bool>>? _eventAction;
 

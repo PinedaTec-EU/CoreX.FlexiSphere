@@ -1,0 +1,54 @@
+{
+    "secrets": "j9pPwvaqDU1qrDyre0YX9qG6C0kloRLi",
+    "NLog": {
+        "autoReload": true,
+        "throwConfigExceptions": true,
+        "internalLogFile": "${basedir}/app.logs/nlog-internal.log",
+        "internalLogLevel": "Trace",
+        "internalLogToConsole": true,
+        "targets": {
+            "async": true,
+            "logfile": {
+                "type": "File",
+                "fileName": "${basedir}/app.logs/test.${date:format=yyyy.MM.dd}.log",
+                "layout": "${time}|${uppercase:${level}}|${callsite} >| ${message} ${exception:format=tostring}"
+            },
+            "logconsole": {
+                "type": "ColoredConsole",
+                "layout": "${time}|${uppercase:${level}}|${callsite} >| ${message} ${exception:format=tostring}"
+            }
+        },
+        "rules": [
+            {
+                "logger": "ark.*",
+                "minLevel": "Trace",
+                "writeTo": "logconsole"
+            },
+            {
+                "logger": "ark.*",
+                "minLevel": "Trace",
+                "writeTo": "logfile"
+            },
+            {
+                "logger": "Microsoft.*",
+                "minLevel": "Info",
+                "writeTo": "logfile"
+            },
+            {
+                "logger": "Microsoft.*",
+                "minLevel": "Info",
+                "writeTo": "logconsole"
+            },
+            {
+                "logger": "*",
+                "minLevel": "Debug",
+                "writeTo": "logconsole"
+            },
+            {
+                "logger": "*",
+                "minLevel": "Debug",
+                "writeTo": "logfile"
+            }
+        ]
+    }
+}

@@ -92,7 +92,7 @@ public sealed class FlexiSphere : IFlexiSphere
             trigger.OnCompleted += (sender, context) => this.OnFlexiSphereTriggerCompleted(sender, context);
             trigger.OnTriggered += (sender, context) => this.OnFlexiSphereTriggered(sender, context);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not FlexiSphereException)
         {
             var nexp = new FlexiSphereException("An error occurred while adding a trigger to the FlexiSphere", ex);
             _logger.Error(nexp, "An error occurred while adding a trigger to the FlexiSphere");
