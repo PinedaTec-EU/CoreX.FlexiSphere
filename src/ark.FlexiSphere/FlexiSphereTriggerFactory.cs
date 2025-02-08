@@ -50,7 +50,7 @@ public class FlexiSphereTriggerFactory : IFlexiSphereTriggerFactory
     public FlexiSphereTriggerFactory()
     { }
 
-    public FlexiSphereTriggerFactory(IOptions<FlexiSphereTriggerFactoryOptions> options)
+    public FlexiSphereTriggerFactory(IOptions<FlexiSphereTriggerFactoryOptions>? options)
         : this()
     {
         if (options is not null)

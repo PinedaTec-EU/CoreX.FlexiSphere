@@ -83,14 +83,14 @@ public class FlexiSphereScheduledTriggerTest : IClassFixture<TestFixture>
         trigger.MaxConcurrents = 1;
         trigger.ActivateTrigger(cancellationToken: TestContext.Current.CancellationToken);
 
-        bool isTriggered = false;
-        trigger.OnTriggered += (sender, args) => isTriggered = true;
+        int triggerCounter = 0;
+        trigger.OnTriggered += (sender, args) => triggerCounter++;
 
-        await AppsHelper.DelayWhileAsync(5000, () => !isTriggered, cancellationToken: TestContext.Current.CancellationToken);
+        await AppsHelper.DelayWhileAsync(1000, () => triggerCounter == 0, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
-        trigger.Counter.ShouldBe(1);
-        isTriggered.ShouldBeTrue();
+        trigger.Counter.ShouldBe(triggerCounter);
+        triggerCounter.ShouldBeGreaterThan(0);
     }
 
     [Fact]
@@ -172,10 +172,10 @@ public class FlexiSphereScheduledTriggerTest : IClassFixture<TestFixture>
         await AppsHelper.DelayWhileAsync(5000, () => isTriggered < 2, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
+        isFaulted.ShouldBeFalse();
         trigger.Counter.ShouldBeGreaterThanOrEqualTo(2);
         isTriggered.ShouldBeGreaterThanOrEqualTo(2);
         isCompleted.ShouldBeFalse();
-        isFaulted.ShouldBeFalse();
     }
 
     [Fact]

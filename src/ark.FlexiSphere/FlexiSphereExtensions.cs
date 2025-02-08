@@ -134,9 +134,9 @@ public class FlexiSphereFactoryOptions
 
 public class FlexiSphereTriggerFactoryOptions
 {
-    public bool FireTriggerOnStart { get; set; }
-    public int MaxOccurrences { get; set; }
-    public int MaxConcurrents { get; set; }
+    public bool FireTriggerOnStart { get; set; } = false;
+    public int MaxOccurrences { get; set; } = 0;
+    public int MaxConcurrents { get; set; } = 1;
 }
 
 public class FlexiSphereJobFactoryOptions

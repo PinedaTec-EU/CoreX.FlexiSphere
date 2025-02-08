@@ -26,8 +26,10 @@
 
 #endregion
 
-using ark.FlexiSphere.triggers;
 using Microsoft.Extensions.DependencyInjection;
+
+using ark.FlexiSphere.triggers;
+
 using Moq;
 
 using Shouldly;
@@ -93,6 +95,26 @@ public class FlexiSphereTriggerFactoryTest : IClassFixture<TestFixture>
     }
 
     [Fact]
+    public void Factory_EventTrigger_DefaultValues()
+    {
+        // Arrange
+        var factory = new FlexiSphereTriggerFactory();
+        factory
+            .WithTriggerName("Test", "TestGroup")
+            .ActivateOnAction((context) => Task.FromResult(true));
+
+        // Act
+        var trigger = factory.Build();
+
+        // Assert
+        trigger.ShouldNotBeNull();
+        trigger.MaxOccurrences.ShouldBe(0);
+        trigger.MaxConcurrents.ShouldBe(1);
+
+        trigger.TriggerName.ShouldBe("Test");
+    }
+
+    [Fact]
     public void Factory_EventTrigger_FireOnStart()
     {
         // Arrange
@@ -134,6 +156,18 @@ public class FlexiSphereTriggerFactoryTest : IClassFixture<TestFixture>
         action.ShouldThrow<ArgumentException>();
     }
 
+    [Fact]
+    public void Factory_Duplicated_ActivateOnAction()
+    {
+        // Arrange
+        var factory = new FlexiSphereTriggerFactory();
+        var action = () => factory.ActivateOnAction((context) => Task.FromResult(true))
+            .ActivateOnAction((context) => Task.FromResult(true));
+
+        // Assert
+        action.ShouldNotThrow();
+    }
+
     #endregion
 
     #region ScheduledTrigger
@@ -156,6 +190,28 @@ public class FlexiSphereTriggerFactoryTest : IClassFixture<TestFixture>
         trigger.ShouldNotBeNull();
         trigger.MaxOccurrences.ShouldBe(7);
         trigger.MaxConcurrents.ShouldBe(5);
+
+        var triggerScheduled = trigger as FlexiSphereScheduledTrigger;
+        triggerScheduled.ShouldNotBeNull();
+        triggerScheduled!.CronTime.ShouldBe("0,20,40 * * * *");
+    }
+
+    [Fact]
+    public void Factory_ScheduledTrigger_DefaultValues()
+    {
+        // Arrange
+        var factory = new FlexiSphereTriggerFactory();
+        factory
+            .FireTriggerOnStart(true)
+            .StartOn("0 0/20 * * * *");
+
+        // Act
+        var trigger = factory.Build();
+
+        // Assert
+        trigger.ShouldNotBeNull();
+        trigger.MaxOccurrences.ShouldBe(0);
+        trigger.MaxConcurrents.ShouldBe(1);
 
         var triggerScheduled = trigger as FlexiSphereScheduledTrigger;
         triggerScheduled.ShouldNotBeNull();
@@ -199,7 +255,7 @@ public class FlexiSphereTriggerFactoryTest : IClassFixture<TestFixture>
     #endregion
 
     [Fact]
-    public void Factory_InvalidSettings_SA()
+    public void Factory_InvalidTriggersType_SA()
     {
         // Arrange
         var factory = new FlexiSphereTriggerFactory();
@@ -211,7 +267,7 @@ public class FlexiSphereTriggerFactoryTest : IClassFixture<TestFixture>
     }
 
     [Fact]
-    public void Factory_InvalidSettings_AS()
+    public void Factory_InvalidTriggersType_AS()
     {
         // Arrange
         var factory = new FlexiSphereTriggerFactory();
@@ -232,18 +288,6 @@ public class FlexiSphereTriggerFactoryTest : IClassFixture<TestFixture>
 
         // Assert
         action.ShouldThrow<FlexiSphereException>();
-    }
-
-    [Fact]
-    public void Factory_Duplicated_ActivateOnAction()
-    {
-        // Arrange
-        var factory = new FlexiSphereTriggerFactory();
-        var action = () => factory.ActivateOnAction((context) => Task.FromResult(true))
-            .ActivateOnAction((context) => Task.FromResult(true));
-
-        // Assert
-        action.ShouldNotThrow();
     }
 
     [Fact]
@@ -278,6 +322,8 @@ public class FlexiSphereTriggerFactoryTest : IClassFixture<TestFixture>
         trigger.ShouldNotBeNull();
         trigger.MaxConcurrents.ShouldBe(5);
     }
+
+    #region DI
 
     [Fact]
     public void Factory_Event_Setup_WithDI()
@@ -375,3 +421,5 @@ public class FlexiSphereTriggerFactoryTest : IClassFixture<TestFixture>
         Trigger.ShouldBeOfType<FakeClass_FlexiSphereTrigger>();
     }
 }
+
+#endregion

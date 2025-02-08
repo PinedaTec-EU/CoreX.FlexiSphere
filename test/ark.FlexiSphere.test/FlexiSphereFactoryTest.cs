@@ -46,20 +46,20 @@ public class FlexiSphereFactoryTest : IClassFixture<TestFixture>
     public void CreateFactoryInstance()
     {
         // Arrange
-        var Factory = FlexiSphereFactory.Create();
+        var factory = FlexiSphereFactory.Create();
 
         // Act
-        Factory.ShouldNotBeNull();
+        factory.ShouldNotBeNull();
     }
 
     [Fact]
     public void Build()
     {
         // Arrange
-        var Factory = FlexiSphereFactory.Create();
+        var factory = FlexiSphereFactory.Create();
 
         // Act
-        var tsphere = Factory.Build();
+        var tsphere = factory.Build();
 
         // Assert
         tsphere.ShouldNotBeNull();
@@ -69,54 +69,123 @@ public class FlexiSphereFactoryTest : IClassFixture<TestFixture>
     public void AddJob()
     {
         // Arrange
-        var Factory = FlexiSphereFactory.Create();
+        var factory = FlexiSphereFactory.Create();
         var job = new Mock<IFlexiSphereJob>();
 
         // Act
-        Factory.AddJob(job.Object);
+        factory.AddJob(job.Object);
 
         // Assert
-        Factory.Build().Jobs.Count.ShouldBe(1);
+        factory.Build().Jobs.Count.ShouldBe(1);
     }
 
     [Fact]
     public void AddJobWithAction()
     {
         // Arrange
-        var Factory = FlexiSphereFactory.Create();
+        var factory = FlexiSphereFactory.Create();
 
         // Act
-        Factory.AddJob(b => b.WithJobName("Test", "").SetJobAction((context) => { return Task.FromResult(true); }));
+        factory.AddJob(b => b.WithJobName("Test", "").SetJobAction((context) => { return Task.FromResult(true); }));
 
         // Assert
-        Factory.Build().Jobs.Count.ShouldBe(1);
+        factory.Build().Jobs.Count.ShouldBe(1);
     }
 
     [Fact]
-    public void AddTrigger()
+    public void AddTrigger_Custom()
     {
         // Arrange
-        var Factory = FlexiSphereFactory.Create();
+        var factory = FlexiSphereFactory.Create();
         var trigger = new Mock<IFlexiSphereTrigger>();
 
         // Act
-        Factory.AddTrigger(trigger.Object);
+        factory.AddTrigger(trigger.Object);
 
         // Assert
-        Factory.Build().Triggers.Count.ShouldBe(1);
+        factory.Build().Triggers.Count.ShouldBe(1);
     }
 
     [Fact]
-    public void AddTriggerWithAction()
+    public void AddTrigger_WithFactory_Scheduled()
     {
         // Arrange
-        var Factory = FlexiSphereFactory.Create();
+        var factory = FlexiSphereFactory.Create();
 
         // Act
-        Factory.AddTrigger(b => b.WithTriggerName("Test", "").StartOn("5 0 * 8 *"));
+        factory.AddTrigger(fstFactory =>
+            fstFactory.WithTriggerName("Test", "")
+                .FireTriggerOnStart(true)
+                .StartOn("5 0 * 8 *"));
 
         // Assert
-        Factory.Build().Triggers.Count.ShouldBe(1);
+        factory.Build().Triggers.Count.ShouldBe(1);
+    }
+
+
+    [Fact]
+    public void AddTrigger_WithFactory_Scheduled_DI()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere();
+        var serviceProvider = services.BuildServiceProvider();
+        var factory = serviceProvider.GetRequiredService<IFlexiSphereComponentFactory>();
+
+        // Act
+        factory.AddTrigger(fstFactory =>
+            fstFactory.WithTriggerName("Test", "")
+                .FireTriggerOnStart(true)
+                .StartOn("5 0 * 8 *"));
+
+        // Assert
+        factory.Build().Triggers.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void AddTrigger_WithFactory_Event()
+    {
+        // Arrange
+        var factory = FlexiSphereFactory.Create();
+
+        // Act
+        factory.AddTrigger(fstFactory =>
+            fstFactory.WithTriggerName("Test", "")
+                .ActivateOnAction(act => Task.FromResult(true)));
+
+        // Assert
+        factory.Build().Triggers.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void AddTrigger_WithFactory_Event_DI()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddFlexiSphere();
+        var serviceProvider = services.BuildServiceProvider();
+        var factory = serviceProvider.GetRequiredService<IFlexiSphereComponentFactory>();
+
+        // Act
+        factory.AddTrigger(fstFactory =>
+            fstFactory.WithTriggerName("Test", "")
+                .ActivateOnAction(act => Task.FromResult(true)));
+
+        // Assert
+        factory.Build().Triggers.Count.ShouldBe(1);
+    }
+    [Fact]
+    public void AddTrigger_WithFactory_FireTriggerOnStart()
+    {
+        // Arrange
+        var factory = FlexiSphereFactory.Create();
+
+        factory.AddTrigger(tstFactory =>
+            {
+                tstFactory.WithTriggerName("GandiDNSWorkerTrigger", "GandiDNSWorker")
+                    .FireTriggerOnStart(true)
+                    .StartOn("5 0 * 8 *");
+            });
     }
 
     [Fact]
