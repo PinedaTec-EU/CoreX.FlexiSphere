@@ -29,8 +29,11 @@
 using System.Diagnostics;
 
 using ark.extensions;
+using ark.aspects;
 
 using NLog;
+
+[module: NLogExecutionTimeAttribute]
 
 namespace ark.FlexiSphere;
 

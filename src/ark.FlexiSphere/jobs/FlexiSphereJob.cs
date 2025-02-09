@@ -28,7 +28,7 @@
 
 using System.Diagnostics;
 using System.Threading.RateLimiting;
-
+using ark.aspects;
 using ark.extensions;
 
 using NLog;
@@ -94,6 +94,7 @@ public sealed class FlexiSphereJob : IFlexiSphereJob
         }
     }
 
+    [NLogExecutionTimeAttribute]
     public async Task ExecuteAsync(IFlexiSphereContext? context = null, CancellationToken cancellationToken = default)
     {
         try
