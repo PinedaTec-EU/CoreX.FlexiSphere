@@ -22,7 +22,7 @@ echo "La nueva versión es: $new_version"
 dotnet build -c Release -p:Version=$new_version
 
 # Crear el paquete NuGet
-nuget pack src/ark.FlexiSphere/.nuspec -Version $new_version -outputdirectory ./nugets
+nuget pack src/CoreX.FlexiSphere/.nuspec -Version $new_version -outputdirectory ./nugets
 
 # Publicar el paquete NuGet to local folder
-cp ./nugets/ark.*.$new_version.nupkg ../nugets
+cp ./nugets/CoreX.*.$new_version.nupkg ../nugets

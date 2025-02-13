@@ -9,11 +9,11 @@
         "logViewer.watch": [
             {
                 "title": "NLog internal",
-                "pattern": "${workspaceFolder}/test/ark.FlexiSphere.test/bin/Debug/net9.0/app.logs/nlog-internal*.log"
+                "pattern": "${workspaceFolder}/test/CoreX.FlexiSphere.test/bin/Debug/net9.0/app.logs/nlog-internal*.log"
             },
             {
                 "title": "Test Apps",
-                "pattern": "${workspaceFolder}/test/ark.FlexiSphere.test/bin/Debug/net9.0/app.logs/test.*.log"
+                "pattern": "${workspaceFolder}/test/CoreX.FlexiSphere.test/bin/Debug/net9.0/app.logs/test.*.log"
             }
         ],
         "azureTerraform.terminal": "integrated",
