@@ -1,4 +1,4 @@
-# ARK FlexiSphere
+# CoreX FlexiSphere
 
 FlexiSphere is a C# library (net 9), extensible and configurable component for managing events and scheduled tasks. This project allows you to define triggers and jobs that execute based on certain conditions.
 
@@ -8,12 +8,20 @@ FlexiSphere is a C# library (net 9), extensible and configurable component for 
 - **ScheduledTrigger**: Executes at intervals configured according to a cron expression.
 - **Jobs**: Configured with at least one job that meets a specific interface and executes when any of the triggers activate.
 
-## Installation
+## Hands on code
 
 To install FlexiSphere, clone this repository and add the project to your solution:
 
 ```bash
-git clone https://github.com/PinedaTec-EU/ark.FlexiSphere.git
+git clone https://github.com/PinedaTec-EU/corex.FlexiSphere.git
+```
+
+## Nuget
+
+Check the last version available at [nuget.org](https://www.nuget.org/packages/corex.flexisphere/)
+
+```bash
+dotnet add <project> package corex.flexisphere --version 999999
 ```
 
 ## Contributions
