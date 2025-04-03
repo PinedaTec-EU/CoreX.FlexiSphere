@@ -26,3 +26,6 @@ nuget pack src/CoreX.FlexiSphere/.nuspec -Version $new_version -outputdirectory 
 
 # Publicar el paquete NuGet to local folder
 cp ./nugets/CoreX.*.$new_version.nupkg ../nugets
+
+# Publicar el paquete NuGet to metheora
+dotnet nuget push -s http://metheora.pinedatec.eu.local:30555/v3/index.json ./nugets/CoreX.FlexiSphere.$new_version.nupkg 
