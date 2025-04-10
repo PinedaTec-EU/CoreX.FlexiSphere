@@ -22,10 +22,12 @@ echo "La nueva versión es: $new_version"
 dotnet build -c Release -p:Version=$new_version
 
 # Crear el paquete NuGet
-nuget pack src/CoreX.FlexiSphere/.nuspec -Version $new_version -outputdirectory ./nugets
+nuget pack src/CoreX.extensions/.nuspec -Version $new_version -outputdirectory ./nugets
+nuget pack src/CoreX.providers/.nuspec -Version $new_version -outputdirectory ./nugets
 
 # Publicar el paquete NuGet to local folder
 cp ./nugets/CoreX.*.$new_version.nupkg ../nugets
 
+apiKey=$(cat ./metheora.apikey.lic)
 # Publicar el paquete NuGet to metheora
-dotnet nuget push -s http://metheora.pinedatec.eu.local:30555/v3/index.json ./nugets/CoreX.FlexiSphere.$new_version.nupkg 
+dotnet nuget push -s http://metheora.pinedatec.eu.local:30555/v3/index.json ./nugets/CoreX.*.$new_version.nupkg -k $apiKey
