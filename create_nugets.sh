@@ -28,6 +28,10 @@ nuget pack src/CoreX.providers/.nuspec -Version $new_version -outputdirectory ./
 # Publicar el paquete NuGet to local folder
 cp ./nugets/CoreX.*.$new_version.nupkg ../nugets
 
-apiKey=$(cat ./metheora.apikey.lic)
 # Publicar el paquete NuGet to metheora
+apiKey=$(cat ./metheora.apikey.lic)
 dotnet nuget push -s http://metheora.pinedatec.eu.local:30555/v3/index.json ./nugets/CoreX.*.$new_version.nupkg -k $apiKey
+
+# Publicar el paquete NuGet to nuget.org
+apiKey=$(cat ./nuget.org.lic)
+dotnet nuget push -s https://api.nuget.org/v3/index.json ./nugets/CoreX.*.$new_version.nupkg -k $apiKey
