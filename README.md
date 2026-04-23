@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://github.com/PinedaTec-EU/CoreX.FlexiSphere">
+    <img loading="lazy" alt="Sphere Integration Hub" src="./docs/images/flexisphere-card.png" width="85%"/>
+  </a>
+</p>
+
 # CoreX FlexiSphere
 
 FlexiSphere is a C# library (net 9), extensible and configurable component for managing events and scheduled tasks. This project allows you to define triggers and jobs that execute based on certain conditions.
