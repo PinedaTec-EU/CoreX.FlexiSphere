@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "mode": "evidence",
+  "commands": [
+    [
+      "dotnet",
+      "build"
+    ],
+    [
+      "dotnet",
+      "test"
+    ],
+    [
+      "dotnet",
+      "publish"
+    ],
+    [
+      "dotnet",
+      "run"
+    ]
+  ],
+  "notes": "Record successful compiler-bearing outer invocations as evidence; repeated successes count, failures and skipped compilation do not. Preserve existing version artifacts and release milestones; no new version-bump or ledger workflow is introduced by this adapter."
+}
